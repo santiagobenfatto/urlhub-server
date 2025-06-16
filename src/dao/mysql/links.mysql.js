@@ -1,6 +1,6 @@
 import { DatabaseError } from '../../errors/custom-errors.js'
 
-export default class linksMySQL {
+export default class LinksMySQL {
     constructor(connection) {
         this.connection = connection
     }
