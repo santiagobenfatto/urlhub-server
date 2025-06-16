@@ -21,6 +21,20 @@ export default class UsersMySQL {
         }
     }
 
+    async checkUser(email) {
+    try {
+        const result = await this.connection.execute({
+            sql: `SELECT COUNT(*) AS count FROM users WHERE email = ?`,
+            args: [email]
+        })
+
+            return result[0].count > 0 // Retorna true si el usuario existe
+        } catch (error) {
+            throw new DatabaseError(`Error al verificar existencia de usuario con email (${email}): ${error.message}`)
+        }
+    }
+
+
     create = async (user) => {
         try {
             const result = await this.connection.execute({

@@ -7,5 +7,6 @@ export default {
     cookieToken: process.env.COOKIE_TOKEN,
     port: process.env.PORT,
     tursoDB: process.env.TURSO_DB_URL,
-    authToken: process.env.TURSO_AUTH_TOKEN
+    authToken: process.env.TURSO_AUTH_TOKEN,
+    selfURL: process.env.SELF_URL
 }

@@ -1,3 +1,5 @@
+import { DatabaseError } from '../../errors/custom-errors.js'
+
 export default class linksMySQL {
     constructor(connection) {
         this.connection = connection
@@ -12,6 +14,32 @@ export default class linksMySQL {
             return result
         } catch (error) {
             throw new DatabaseError(`Error al obtener enlaces del usuario con ID ${userId}: ${error.message}`)
+        }
+    }
+
+    async checkAlias(alias) {
+        try {
+            const result = await this.connection.execute({
+                sql: `SELECT COUNT(*) AS count FROM links WHERE alias = ?`,
+                args: [alias]
+            })
+
+            return result[0].count > 0
+        } catch (error) {
+            throw new DatabaseError(`Error al verificar existencia del alias '${alias}': ${error.message}`)
+        }
+    }
+
+    async checkLink(linkId) {
+        try {
+            const result = await this.connection.execute({
+                sql: `SELECT COUNT(*) AS count FROM links WHERE id = ?`,
+                args: [linkId]
+            })
+
+            return result[0].count > 0
+        } catch (error) {
+            throw new DatabaseError(`Error al verificar existencia del link ID '${linkId}': ${error.message}`)
         }
     }
 
