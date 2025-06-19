@@ -17,22 +17,16 @@ export class LinksService {
 
         const alias = data.alias || shortAlias()
         const shortLink = `${config.selfURL}/${data.shortLink || alias}` 
-
-        const linkData = {
-            user_id: data.user_id,
-            title: data.title,
-            big_link: data.bigLink,
-            short_link: shortLink,
-            icon: data.icon,
-            alias: alias
-        }
-
-        const aliasExists = await this.linksRepository.checkAlias(linkData.alias)
+      
+        const aliasExists = await this.linksRepository.checkAlias(alias)
         if (aliasExists) {
-            throw new ElementAlreadyExists(`El alias '${linkData.alias}' ya está en uso.`)
+            throw new ElementAlreadyExists(`El alias '${data.alias}' ya está en uso.`)
         }
 
-        await this.linksRepository.addLink(linkData)
+        data.alias = alias
+        data.short_link = shortLink
+
+        await this.linksRepository.addLink(data)
 
     }
 
