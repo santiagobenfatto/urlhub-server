@@ -1,7 +1,7 @@
 import { ElementNotFound } from "../errors/custom-errors"
 
 
-export class LinksController { 
+export default class LinksController { 
     constructor(linksService){
         this.linksService = linksService
     }
@@ -61,7 +61,6 @@ export class LinksController {
             if (!updates || Object.keys(updates).length === 0) {
                 return res.sendClientError('No fields provided for update')
             }
-
 
             const result = await this.linksService.updateLink(linkId, updates)
             

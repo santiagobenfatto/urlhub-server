@@ -1,6 +1,6 @@
 import { UserNotFound, UserAlreadyExists } from "../errors/custom-errors"
 
-export class UsersController {
+export default class UsersController {
     constructor(usersService) {
         this.usersService = usersService
     }

@@ -1,6 +1,6 @@
-import { DatabaseError } from '../../errors/custom-errors.js'
+import { CannotDelete, DatabaseError } from '../../errors/custom-errors.js'
 
-export default class LinksMySQL {
+export class LinksMySQL {
     constructor(connection) {
         this.connection = connection
     }

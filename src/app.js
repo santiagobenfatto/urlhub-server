@@ -4,6 +4,7 @@ import config from './config/config.js'
 import { __dirname, __filename } from './utils/utils.js'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
+import apiV1Routes from './routes/api.v1.routes.js'
 
 const app = express()
 const httpServer = createServer(app)
@@ -18,11 +19,8 @@ app.use(cors({
     // origin: originURL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
 }))
+app.use('/api/v1', apiV1Routes)
 
-
-app.get('/home', (req,res) => { 
-    res.send('hello word')
-})
 
 httpServer.listen(PORT, () => {
     console.log(

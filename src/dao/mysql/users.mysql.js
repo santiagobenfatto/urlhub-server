@@ -1,4 +1,7 @@
-export default class UsersMySQL {
+import { DatabaseError, UserAlreadyExists, UserNotFound } from "../../errors/custom-errors"
+
+
+export class UsersMySQL {
     constructor(connection) {
         console.log('Working UsersDB with MySQL')
         this.connection = connection

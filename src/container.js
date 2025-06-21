@@ -7,18 +7,26 @@ const usersMySQL = new UsersMySQL(turso)
 
 //Repositories
 
-import { LinksRepository } from './links.repository.js'
-import { UsersRepository } from './users.repository.js'
+import { LinksRepository } from './repositories/links.repository.js'
+import { UsersRepository } from './repositories/users.repository.js'
 
 const linksRepository = new LinksRepository(linksMySQL)
 const usersRepository = new UsersRepository(usersMySQL)
 
 //Services
 
-import { LinksService } from './links.service.js'
-import { UsersService } from './users.service.js'
+import { LinksService } from './services/links.service.js'
+import { UsersService } from './service/users.service.js'
 
 const linksService = new LinksService(linksRepository)
 const usersService = new UsersService(usersRepository)
 
-export { linksService, usersService }
+//Controllers
+
+import { LinksController } from './controllers/links.controller.js'
+import { UsersController } from './controllers/users.controller.js'
+
+export const linksController = new LinksController(linksService)
+export const usersController = new UsersController(usersService)
+
+
