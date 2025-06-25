@@ -1,7 +1,7 @@
 import express from 'express'
 import { createServer } from 'node:http'
 import config from './config/config.js'
-import { __dirname, __filename } from './utils/utils.js'
+import { __dirname } from './utils/utils.js'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import apiV1Routes from './routes/api.v1.routes.js'

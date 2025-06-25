@@ -1,6 +1,6 @@
-import { UserNotFound, UserAlreadyExists } from "../errors/custom-errors"
+import { UserNotFound, UserAlreadyExists } from '../errors/custom-errors.js'
 
-export default class UsersController {
+export class UsersController {
     constructor(usersService) {
         this.usersService = usersService
     }

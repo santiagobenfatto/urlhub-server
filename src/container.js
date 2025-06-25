@@ -16,7 +16,7 @@ const usersRepository = new UsersRepository(usersMySQL)
 //Services
 
 import { LinksService } from './services/links.service.js'
-import { UsersService } from './service/users.service.js'
+import { UsersService } from './services/users.service.js'
 
 const linksService = new LinksService(linksRepository)
 const usersService = new UsersService(usersRepository)

@@ -4,6 +4,7 @@ export class LinksRoutes extends Router {
     constructor(linksController){
         super()
         this.linksController = linksController
+        this.init()
     }
     init() {    
         this.get('/:userId', ['USER'], 'JWT', this.linksController.getUserLinks)

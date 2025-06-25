@@ -1,4 +1,4 @@
-import { DatabaseError, UserAlreadyExists, UserNotFound } from "../../errors/custom-errors"
+import { DatabaseError, UserAlreadyExists, UserNotFound } from '../../errors/custom-errors.js'
 
 
 export class UsersMySQL {

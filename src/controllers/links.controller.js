@@ -1,7 +1,7 @@
-import { ElementNotFound } from "../errors/custom-errors"
+import { ElementNotFound } from '../errors/custom-errors.js'
 
 
-export default class LinksController { 
+export class LinksController { 
     constructor(linksService){
         this.linksService = linksService
     }

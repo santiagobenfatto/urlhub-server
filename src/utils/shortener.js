@@ -4,6 +4,6 @@ const shortAlias = () => {
     return newAlias =  nanoid(5)
 }
 
-export default { 
+export { 
     shortAlias
 }

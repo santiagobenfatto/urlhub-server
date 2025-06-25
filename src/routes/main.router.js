@@ -12,11 +12,11 @@ const permissions = {
 }
 
 
-export default class Router {
+export class Router {
     constructor(){
         this.router = expressRouter()
         this.initMiddlewares()
-        this.init()
+        //this.init()
     }
 
     getRouter (){

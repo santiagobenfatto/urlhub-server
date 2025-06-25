@@ -4,6 +4,7 @@ export class UserRoutes extends Router {
     constructor(usersController){
         super()
         this.usersController = usersController
+        this.init()
     }
     init() {    
         this.post('/register', ['PUBLIC'], 'NOTHING', this.usersController.register)

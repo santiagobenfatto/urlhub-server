@@ -1,4 +1,4 @@
-import { UserNotFound, UserAlreadyExists } from "../errors/custom-errors"
+import { UserNotFound, UserAlreadyExists } from '../errors/custom-errors.js'
 
 export class UsersService {
     constructor(usersRepository){
