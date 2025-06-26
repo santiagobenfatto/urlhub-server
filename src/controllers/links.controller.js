@@ -1,16 +1,12 @@
 import { ElementNotFound } from '../errors/custom-errors.js'
-
+import { linksService } from '../container.js'
 
 export class LinksController { 
-    constructor(linksService){
-        this.linksService = linksService
-    }
-
     async getUserLinks(req, res) {
         try {
             const { userId } = req.params
 
-            const result = await this.linksService.getUserLinks(userId)
+            const result = await linksService.getUserLinks(userId)
 
             res.sendSuccess({ message: 'Links retrieved successfully', data: result })
             
@@ -38,7 +34,7 @@ export class LinksController {
                 alias
             }
 
-            const result = await this.linksService(data)
+            const result = await linksService(data)
 
             res.sendSuccess({ message: 'Link created successfully', data: result })
         } catch (error) {
@@ -62,7 +58,7 @@ export class LinksController {
                 return res.sendClientError('No fields provided for update')
             }
 
-            const result = await this.linksService.updateLink(linkId, updates)
+            const result = await linksService.updateLink(linkId, updates)
             
             res.sendSuccess({ message: 'Link updated successfully', data: result })
             
@@ -83,7 +79,7 @@ export class LinksController {
             return res.sendClientError('Missing link ID in request URL')
         }
 
-        const result = await this.linksService.removeLink(linkId)
+        const result = await linksService.removeLink(linkId)
 
         res.sendSuccess({
             message: 'Link removed successfully',

@@ -2,6 +2,7 @@ import { CannotDelete, DatabaseError } from '../../errors/custom-errors.js'
 
 export class LinksMySQL {
     constructor(connection) {
+        console.log('Working LinksDB with MySQL')
         this.connection = connection
     }
 
@@ -23,7 +24,7 @@ export class LinksMySQL {
                 sql: `SELECT COUNT(*) AS count FROM links WHERE alias = ?`,
                 args: [alias]
             })
-
+            
             return result[0].count > 0
         } catch (error) {
             throw new DatabaseError(`Error al verificar existencia del alias '${alias}': ${error.message}`)

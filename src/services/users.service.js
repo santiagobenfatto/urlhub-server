@@ -1,4 +1,5 @@
 import { UserNotFound, UserAlreadyExists } from '../errors/custom-errors.js'
+import { createHash } from '../utils/utils.js'
 
 export class UsersService {
     constructor(usersRepository){
@@ -7,8 +8,9 @@ export class UsersService {
 
     async login(userCredentials){
         const userData = await this.usersRepository.getByEmailRegister(userCredentials.email)
+
         if(userData.length == 0){
-            throw new UserNotFound('Usuario no encontrado')
+            throw new UserNotFound('User not found')
         }
 
         const validatePass = passwordValidation(userCredentials.password, userData.password)
@@ -24,16 +26,18 @@ export class UsersService {
       
     
     async register(userCredentials){
-        const checkUser = this.usersRepository.checkUser(userCredentials.email)
-        
-        if(!checkUser){
-            throw new UserAlreadyExists('El email ingresado ya pertenece a un usuario registrado')
+        const checkUser = await this.usersRepository.checkUser(userCredentials.email_register)
+
+        if(checkUser){
+            throw new UserAlreadyExists('The email already exists')
         }
         
         const newUser = {
-            first_name: userCredentials.first_name,
-            last_name: userCredentials.last_name,
-            email_register: userCredentials.email
+            first_name: userCredentials.first_name || '',
+            last_name: userCredentials.last_name || '',
+            nickname: userCredentials.nickname || '',
+            img_url: userCredentials || '',
+            email_register: userCredentials.email_register
         }
         
         const passHashed = createHash(userCredentials.password)

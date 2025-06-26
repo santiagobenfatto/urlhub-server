@@ -19,6 +19,7 @@ app.use(cors({
     // origin: originURL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
 }))
+
 app.use('/api/v1', apiV1Routes)
 
 

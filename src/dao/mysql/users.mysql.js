@@ -31,7 +31,7 @@ export class UsersMySQL {
             args: [email]
         })
 
-            return result[0].count > 0 // Retorna true si el usuario existe
+        return result.rows[0].count > 0 // Retorna true si el usuario existe
         } catch (error) {
             throw new DatabaseError(`Error al verificar existencia de usuario con email (${email}): ${error.message}`)
         }
@@ -39,10 +39,11 @@ export class UsersMySQL {
 
 
     create = async (user) => {
+        console.log(user)
         try {
             const result = await this.connection.execute({
                 sql: `INSERT INTO users (first_name, last_name, nickname, email, hashed_pass) VALUES (?,?,?,?,?)`,
-                args: [user.first_name, user.last_name, user.nickname, user.email, user.password]
+                args: [user.first_name, user.last_name, user.nickname, user.email_register, user.password]
             })
 
             return result
@@ -50,7 +51,7 @@ export class UsersMySQL {
             if (error.message.includes("Duplicate entry")) {
                 throw new UserAlreadyExists(`El usuario con email ${user.email} ya existe.`)
             }
-            throw new DatabaseError(`Error al crear usuario (${user.email}): ${error.message}`)
+            throw new DatabaseError(`Error al crear usuario (${user.email_register}): ${error.message}`)
         }
     }
 

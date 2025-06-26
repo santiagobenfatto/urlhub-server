@@ -18,15 +18,15 @@ const usersRepository = new UsersRepository(usersMySQL)
 import { LinksService } from './services/links.service.js'
 import { UsersService } from './services/users.service.js'
 
-const linksService = new LinksService(linksRepository)
-const usersService = new UsersService(usersRepository)
+export const linksService = new LinksService(linksRepository)
+export const usersService = new UsersService(usersRepository)
 
 //Controllers
 
-import { LinksController } from './controllers/links.controller.js'
-import { UsersController } from './controllers/users.controller.js'
+// import { LinksController } from './controllers/links.controller.js'
+// import { UsersController } from './controllers/users.controller.js'
 
-export const linksController = new LinksController(linksService)
-export const usersController = new UsersController(usersService)
+// export const linksController = new LinksController(linksService)
+// export const usersController = new UsersController(usersService)
 
 

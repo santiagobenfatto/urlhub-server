@@ -1,10 +1,8 @@
 import { UserNotFound, UserAlreadyExists } from '../errors/custom-errors.js'
+import { usersService } from '../container.js'
+
 
 export class UsersController {
-    constructor(usersService) {
-        this.usersService = usersService
-    }
-
     async login (req, res) {
         try {
             const { email_register, password } = req.body
@@ -30,7 +28,6 @@ export class UsersController {
         }
     }
       
-    
     async register(req, res) {
        try {
             const { email_register, password } = req.body
@@ -40,8 +37,8 @@ export class UsersController {
             }
 
             const register = await usersService.register({ ...req.body })
-
-            res.send(register)
+            
+            res.sendSuccess(register)
         } catch (error) {
             if(error instanceof UserAlreadyExists){
                 return res.sendClientError({message: `${error.message}`})
