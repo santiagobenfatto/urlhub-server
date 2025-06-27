@@ -18,7 +18,7 @@ export class UsersMySQL {
                 throw new UserNotFound(`No se encontró un usuario con el email: ${email}`)
             }
 
-            return result
+            return result.rows[0]
         } catch (error) {
             throw new DatabaseError(`Error al obtener usuario por email (${email}): ${error.message}`)
         }
@@ -46,10 +46,10 @@ export class UsersMySQL {
                 args: [user.first_name, user.last_name, user.nickname, user.email_register, user.password]
             })
 
-            return result
+            return result.rows[0]
         } catch (error) {
             if (error.message.includes("Duplicate entry")) {
-                throw new UserAlreadyExists(`El usuario con email ${user.email} ya existe.`)
+                throw new UserAlreadyExists(`El usuario con email ${user.email_register} ya existe.`)
             }
             throw new DatabaseError(`Error al crear usuario (${user.email_register}): ${error.message}`)
         }
