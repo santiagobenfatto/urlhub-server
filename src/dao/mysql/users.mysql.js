@@ -66,9 +66,27 @@ export class UsersMySQL {
                 throw new UserNotFound(`No se encontró un usuario con ID: ${userId}`)
             }
 
-            return result
+            return result.rows[0]
         } catch (error) {
             throw new DatabaseError(`Error al actualizar usuario con ID (${userId}): ${error.message}`)
         }
     }
+
+    deleteByEmailRegister = async (email) => {
+        try {
+            const result = await this.connection.execute({
+                sql: `DELETE FROM users WHERE email = ?`,
+                args: [email]
+            })
+
+            if (result.affectedRows === 0) {
+                throw new UserNotFound(`No se encontró un usuario con email: ${email}`)
+            }
+
+            return result.rows[0]
+        } catch (error) {
+            throw new DatabaseError(`Error al eliminar usuario con email ${email}: ${error.message}`)
+        }
+    }
+
 }

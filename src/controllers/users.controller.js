@@ -48,4 +48,23 @@ export class UsersController {
         }
     }
 
+    async deleteByEmailRegister(req, res) {
+       try {
+            const { email_register } = req.body
+            
+            if( !email_register  ) {
+                return res.sendClientError('Incomplete values')
+            }
+
+            await usersService.deleteByEmailRegister(email_register)
+            
+            res.sendSuccess({status: `Delete successful`, message: `The user with email ${email_register} has been deleted`}) 
+        } catch (error) {
+            if(error instanceof UserNotFound){
+                return res.sendClientError({message: `${error.message}`})
+            }
+            res.sendServerError({message: `${error.message}`})
+        }
+    }
+
 }

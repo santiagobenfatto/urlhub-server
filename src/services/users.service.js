@@ -2,11 +2,11 @@ import { UserNotFound, UserAlreadyExists, IncorrectLoginCredentials } from '../e
 import { createHash, generateToken, passwordValidation } from '../utils/utils.js'
 
 export class UsersService {
-    constructor(usersRepository){
+    constructor(usersRepository) {
         this.usersRepository = usersRepository
     }
 
-    async login(userCredentials){
+    async login(userCredentials) {
         const userData = await this.usersRepository.getByEmailRegister(userCredentials.email_register)
 
         if(userData.length == 0){
@@ -25,7 +25,7 @@ export class UsersService {
     }
       
     
-    async register(userCredentials){
+    async register(userCredentials) {
         const checkUser = await this.usersRepository.checkUser(userCredentials.email_register)
 
         if(checkUser){
@@ -45,6 +45,18 @@ export class UsersService {
 
         const result = await this.usersRepository.create(newUser)
         
+        return result
+    }
+
+    async deleteByEmailRegister(email_register) {
+        const checkUser = await this.usersRepository.checkUser(email_register)
+
+        if(!checkUser){
+            throw new UserNotFound('User not found')
+        }
+
+        const result = await this.usersRepository.deleteByEmailRegister(email_register)
+
         return result
     }
 
