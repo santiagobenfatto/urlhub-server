@@ -10,6 +10,6 @@ export class UserRoutes extends Router {
     init() {    
         this.post('/register', ['PUBLIC'], 'NOTHING', this.usersController.register)
         this.post('/login', ['PUBLIC'], 'NOTHING', this.usersController.login)
-        this.delete('/delete', ['PUBLIC'], 'NOTHING', this.usersController.deleteByEmailRegister)
+        this.delete('/delete', ['ADMIN'], 'NOTHING', this.usersController.deleteByEmailRegister)
     }
 }

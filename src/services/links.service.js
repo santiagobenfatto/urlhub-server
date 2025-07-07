@@ -1,6 +1,6 @@
 import config from '../config/config.js'
 import { ElementAlreadyExists, ElementNotFound } from '../errors/custom-errors.js'
-import { shortAlias } from '../utils/shortener.js'
+import { shortAlias } from '../utils/generators.js'
 
 export class LinksService {
     constructor(linksRepository) {

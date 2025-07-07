@@ -12,7 +12,7 @@ const PORT = config.port || 3001
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(`${__dirname}/public`))
 app.use(cookieParser())
 app.use(cors({
     credentials: true,

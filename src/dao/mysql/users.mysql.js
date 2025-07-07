@@ -17,8 +17,8 @@ export class UsersMySQL {
             if (!result || result.length === 0) {
                 throw new UserNotFound(`No se encontró un usuario con el email: ${email}`)
             }
-
-            return result.rows[0]
+            
+            return result.rows
         } catch (error) {
             throw new DatabaseError(`Error al obtener usuario por email (${email}): ${error.message}`)
         }
@@ -42,7 +42,7 @@ export class UsersMySQL {
         console.log(user)
         try {
             const result = await this.connection.execute({
-                sql: `INSERT INTO users (first_name, last_name, nickname, email, hashed_pass) VALUES (?,?,?,?,?)`,
+                sql: `INSERT INTO users (id, first_name, last_name, nickname, img_url, email, hashed_pass) VALUES (?,?,?,?,?,?,?)`,
                 args: [user.first_name, user.last_name, user.nickname, user.email_register, user.password]
             })
 

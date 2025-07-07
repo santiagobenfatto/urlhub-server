@@ -73,7 +73,7 @@ export class Router {
                         error: info.messages ? info.messages : info.toString()
                     })
                 req.user = user
-                next();
+                next()
             })(req, res, next)
         } else {
             next()
@@ -96,9 +96,9 @@ export class Router {
     applyCallbacks(callbacks) {
         return callbacks.map((callback) => async (...params) => {
             try {
-                await callback.apply(this, params);//req, res, next
+                await callback.apply(this, params)//req, res, next
             } catch (error) {
-                params[1].status(500).json({ error: error.message });
+                params[1].status(500).json({ error: error.message })
             }
         })
     }

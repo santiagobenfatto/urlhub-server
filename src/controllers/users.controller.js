@@ -37,9 +37,9 @@ export class UsersController {
                 return res.sendClientError('Incomplete values')
             }
 
-            const register = await usersService.register({ ...req.body })
+            await usersService.register({ ...req.body })
             
-            res.sendSuccess(register)
+            res.sendSuccess({meesage: `User with email: ${email_register} registered`})
         } catch (error) {
             if(error instanceof UserAlreadyExists){
                 return res.sendClientError({message: `${error.message}`})
