@@ -36,14 +36,18 @@ export class UsersController {
             if( !email_register || !password ) {
                 return res.sendClientError('Incomplete values')
             }
-
-            await usersService.register({ ...req.body })
             
-            res.sendSuccess({meesage: `User with email: ${email_register} registered`})
+            console.log('Incoming register request body:', req.body)
+            console.log('Cookies:', req.cookies)
+            
+            const result = await usersService.register({ ...req.body })
+            console.log('Register result:', result)
+            
+            res.sendSuccess({message: `User with email: ${email_register} registered`})
         } catch (error) {
             if(error instanceof UserAlreadyExists){
                 return res.sendClientError({message: `${error.message}`})
-            }
+            }console.log(error)
             res.sendServerError({message: `${error.message}`})
         }
     }

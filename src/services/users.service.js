@@ -29,7 +29,7 @@ export class UsersService {
     
     async register(userCredentials) {
         const checkUser = await this.usersRepository.checkUser(userCredentials.email_register)
-        //santi@gmail.com -> true / false
+
         if(checkUser){
             throw new UserAlreadyExists('The email already exists')
         }
