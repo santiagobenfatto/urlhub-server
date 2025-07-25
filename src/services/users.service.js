@@ -29,8 +29,6 @@ export class UsersService {
     
     async register(userCredentials) {
         const checkUser = await this.usersRepository.checkUser(userCredentials.email_register)
-        console.log('Incoming register request body:', req.body)
-        console.log('Cookies:', req.cookies)
 
         if(checkUser){
             throw new UserAlreadyExists('The email already exists')
