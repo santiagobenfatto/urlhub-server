@@ -14,5 +14,5 @@ export default {
     port: process.env.PORT,
     tursoDB: process.env.TURSO_DB_URL,
     authToken: process.env.TURSO_AUTH_TOKEN,
-    selfURL: process.env.SELF_URL
+    originURL: process.env.ORIGIN_URL
 }

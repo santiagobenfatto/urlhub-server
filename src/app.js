@@ -9,14 +9,14 @@ import apiV1Routes from './routes/api.v1.routes.js'
 const app = express()
 const httpServer = createServer(app)
 const PORT = config.port || 3001
-
+const originURL = config.originURL
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(`${__dirname}/public`))
 app.use(cookieParser())
 app.use(cors({
     credentials: true,
-    // origin: originURL,
+    origin: originURL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
 }))
 

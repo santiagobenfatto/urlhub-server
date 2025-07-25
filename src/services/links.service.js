@@ -13,8 +13,19 @@ export class LinksService {
         return result
     }
 
-    async addLink(data) {
+    async addPublicLink(data){
+        const alias = shortAlias()
+        const shortLink = `${config.selfURL}/${data.shortLink || alias}` 
 
+        const aliasExists = await this.linksRepository.checkAlias(alias)
+        if (aliasExists) {
+            throw new ElementAlreadyExists(`El alias '${data.alias}' ya está en uso.`)
+        }
+
+        await this.linksRepository.addPublicLink(shortLink)
+    }
+
+    async addLink(data) {
         const alias = data.alias || shortAlias()
         const shortLink = `${config.selfURL}/${data.shortLink || alias}` 
       
@@ -23,10 +34,16 @@ export class LinksService {
             throw new ElementAlreadyExists(`El alias '${data.alias}' ya está en uso.`)
         }
 
+        const newData = {
+            id: '',
+            big_link: data.bigLink
+            
+        }
+
         data.alias = alias
         data.short_link = shortLink
 
-        await this.linksRepository.addLink(data)
+        await this.linksRepository.addLink(newData)
 
     }
 
