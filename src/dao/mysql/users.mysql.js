@@ -39,13 +39,12 @@ export class UsersMySQL {
 
 
     create = async (user) => {
-        console.log(user)
         try {
             const result = await this.connection.execute({
                 sql: `INSERT INTO users (id, first_name, last_name, nickname, img_url, email, hashed_pass) VALUES (?,?,?,?,?,?,?)`,
-                args: [user.first_name, user.last_name, user.nickname, user.email_register, user.password]
+                args: [user.id, user.first_name, user.last_name, user.nickname, user.email_register, user.password]
             })
-
+            console.log(result.rows[0])
             return result.rows[0]
         } catch (error) {
             if (error.message.includes("Duplicate entry")) {
