@@ -29,7 +29,7 @@ export class UsersService {
     
     async register(userCredentials) {
         const checkUser = await this.usersRepository.checkUser(userCredentials.email_register)
-
+        
         if(checkUser){
             throw new UserAlreadyExists('The email already exists')
         }
@@ -37,11 +37,9 @@ export class UsersService {
             console.warn(`Attempt to assign a role in request body: ${userCredentials.role}`)
         }
 
-
         const newUser = {
             first_name: userCredentials.first_name || '',
             last_name: userCredentials.last_name || '',
-            nickname: userCredentials.nickname || '',
             img_url: userCredentials.img_url || '',
             email_register: userCredentials.email_register
         }
@@ -49,8 +47,10 @@ export class UsersService {
         const passHashed = createHash(userCredentials.password)
         newUser.id = userId
         newUser.password = passHashed
+        newUser.nickname = `${userCredentials.first_name}${userId}`
         newUser.role = 'USER'
 
+        
         const result = await this.usersRepository.create(newUser)
         
         return result

@@ -39,13 +39,12 @@ export class UsersMySQL {
 
 
     create = async (user) => {
-        console.log('Database object entry USER:', user)
         try {
             const result = await this.connection.execute({
-                sql: `INSERT INTO users (id, first_name, last_name, nickname, img_url, email, hashed_pass, role) VALUES (?,?,?,?,?,?,?)`,
+                sql: `INSERT INTO users (id, first_name, last_name, nickname, img_url, email, hashed_pass, role) VALUES (?,?,?,?,?,?,?, ?)`,
                 args: [user.id, user.first_name, user.last_name, user.nickname, user.img_url, user.email_register, user.password, user.role]
             })
-            console.log(result.rows[0])//no retornó nada.
+            console.log('RESULT DEL CREATE SQL:', result)
             return result.rows[0]
         } catch (error) {
             if (error.message.includes("Duplicate entry")) {
@@ -88,5 +87,4 @@ export class UsersMySQL {
             throw new DatabaseError(`Error al eliminar usuario con email ${email}: ${error.message}`)
         }
     }
-
 }
