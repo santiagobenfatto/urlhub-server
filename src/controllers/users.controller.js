@@ -34,7 +34,7 @@ export class UsersController {
             const { first_name, email_register, password } = req.body
             
             if( !first_name || !email_register || !password ) {
-                return res.sendClientError('Incomplete values')
+                return res.sendClientError({message: 'Incomplete values'})
             }
                         
             await usersService.register({ ...req.body })
@@ -53,7 +53,7 @@ export class UsersController {
             const { email_register } = req.body
             
             if( !email_register  ) {
-                return res.sendClientError('Incomplete values')
+                return res.sendClientError({message: 'Incomplete values'})
             }
 
             await usersService.deleteByEmailRegister(email_register)
