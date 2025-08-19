@@ -7,7 +7,9 @@ export class UsersController {
     async login (req, res) {
         try {
             const { email_register, password } = req.body
-            console.log(req.body)
+            console.log('===EMAIL REGISTER===', email_register)
+            console.log('===PASSWORD===', password)
+
             if( !email_register || !password){
                 return res.sendClientError('Incomplete values')
             }
