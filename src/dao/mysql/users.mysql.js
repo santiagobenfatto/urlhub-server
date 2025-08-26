@@ -31,7 +31,7 @@ export class UsersMySQL {
             args: [email]
         })
 
-        return result.rows[0].count > 0 // Retorna true si el usuario existe
+        return result.rows[0].count > 0
         } catch (error) {
             throw new DatabaseError(`Error al verificar existencia de usuario con email (${email}): ${error.message}`)
         }
@@ -44,7 +44,6 @@ export class UsersMySQL {
                 sql: `INSERT INTO users (id, first_name, last_name, nickname, img_url, email, hashed_pass, role) VALUES (?,?,?,?,?,?,?, ?)`,
                 args: [user.id, user.first_name, user.last_name, user.nickname, user.img_url, user.email_register, user.password, user.role]
             })
-            console.log('RESULT DEL CREATE SQL:', result)
             return result.rows[0]
         } catch (error) {
             if (error.message.includes("Duplicate entry")) {
