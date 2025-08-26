@@ -16,7 +16,7 @@ export class UsersController {
             
             res.cookie(
                 config.cookieToken, accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true }
-            ).send({message: 'Authorized'})
+            ).sendSuccess({message: 'Authorized'})
 
         } catch (error) {
             if(error instanceof UserNotFound){
