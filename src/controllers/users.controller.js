@@ -7,8 +7,6 @@ export class UsersController {
     async login (req, res) {
         try {
             const { email_register, password } = req.body
-            console.log('===EMAIL REGISTER===', email_register)
-            console.log('===PASSWORD===', password)
 
             if( !email_register || !password){
                 return res.sendClientError('Incomplete values')
@@ -49,6 +47,30 @@ export class UsersController {
             res.sendServerError({message: `${error.message}`})
         }
     }
+
+    async logout(req, res){ 
+        try {
+            res.clearCookie(config.cookieToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict',
+            }).redirect('/')
+        } catch (error) {
+            res.sendServerError({message: `${error.message}`})
+        }
+    }
+
+    async authVerify(req, res) {    
+        try {
+            const token = req.cookies[config.cookieToken]
+            if (!token) return res.sendUnauthorized({ error: 'No token' })
+            
+            res.sendSuccess({message: 'User autorized'})
+        } catch {
+            res.sendForbidden({ error: 'Token inválido o expirado' })
+        }
+    }
+
 
     async deleteByEmailRegister(req, res) {
        try {
