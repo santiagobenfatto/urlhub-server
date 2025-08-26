@@ -8,7 +8,6 @@ export class LinksService {
     }
 
     async getUserLinks(userId) {
-        //This can be an array, but it can be empty
         const result = await this.linksRepository.getUserLinks(userId)
         return result
     }

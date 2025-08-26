@@ -4,7 +4,8 @@ import { linksService } from '../container.js'
 export class LinksController { 
     async getUserLinks(req, res) {
         try {
-            const { userId } = req.params
+            console.log('=====ESTE ES EL req.user del token desde links BACKEND=====', req.user)
+            const userId = req.user.id
 
             const result = await linksService.getUserLinks(userId)
 
@@ -20,14 +21,15 @@ export class LinksController {
 
     async addLink(req, res) {
         try {
-            const { user_id, title, big_link, icon, alias } = req.body
+            const { title, big_link, icon, alias } = req.body
+            const userId = req.user.id
 
-            if( !user_id || !title || !big_link || !icon ) { 
+            if( !title || !big_link || !icon ) { 
                 return sendClientError(`Incomplete values`)
             }
 
              const data = {
-                user_id,
+                user_id: userId,
                 title,
                 big_link,
                 icon,
