@@ -12,11 +12,11 @@ export class UsersController {
                 return res.sendClientError('Incomplete values')
             }
 
-            const accessToken = await usersService.login({...req.body})
+            const {accessToken, userAdapted} = await usersService.login({...req.body})
             
             res.cookie(
                 config.cookieToken, accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true }
-            ).sendSuccess({message: 'Authorized'})
+            ).sendSuccess({message: 'Authorized', userAdapted})
 
         } catch (error) {
             if(error instanceof UserNotFound){

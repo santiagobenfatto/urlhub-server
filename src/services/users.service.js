@@ -14,6 +14,7 @@ export class UsersService {
             throw new UserNotFound('User not found')
         }
         const user = users[0]
+        console.log('==== USER DEL SERVICE =====', user)
 
         const validatePass = passwordValidation(userCredentials.password, user.hashed_pass)
         
@@ -21,9 +22,14 @@ export class UsersService {
             throw new IncorrectLoginCredentials('Incorrect credentials')
         }
         
+        const userAdapted = {
+            id: user.id,
+            nickname: user.nickname,
+            email_register: user.email_register,
+        }
         const accessToken = generateToken(user)
 
-        return accessToken
+        return { accessToken, userAdapted}
     }
       
     
