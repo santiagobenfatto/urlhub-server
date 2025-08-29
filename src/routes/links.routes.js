@@ -7,11 +7,11 @@ export class LinksRoutes extends Router {
         this.init()
     }
     init() {
-        this.get('/', ['USER'], 'JWT', this.linksController.getUserLinks)
-        this.post('/short', ['PUBLIC'], 'NONE', this.linksController.addPublicLink)
-        this.post('/', ['USER'], 'JWT', this.linksController.addLink)
-        this.put('/:linkId', ['USER'], 'JWT', this.linksController.updateLink)
-        this.delete('/:linkId', ['USER'], 'JWT', this.linksController.removeLink)
+        this.get('/', 'JWT', ['USER'], this.linksController.getUserLinks)
+        this.post('/short', 'NONE', ['PUBLIC'], this.linksController.addPublicLink)
+        this.post('/', 'JWT', ['USER'], this.linksController.addLink)
+        this.put('/:linkId', 'JWT', ['USER'], this.linksController.updateLink)
+        this.delete('/:linkId', 'JWT', ['USER'], this.linksController.removeLink)
     }
 }
 

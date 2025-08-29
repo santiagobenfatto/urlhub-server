@@ -44,22 +44,22 @@ export class Router {
         this.router[method](path, this.passportStrategy(customStrategy), this.policies(policies), this.applyCallbacks(callbacks))
     }
 
-    get(path, policies, customStrategy, ...callbacks){
-        this.mapRoute('get', path, policies, customStrategy, ...callbacks)
+    get(path, customStrategy, policies, ...callbacks){
+        this.mapRoute('get', path, customStrategy, policies, ...callbacks)
     }
-    post(path, policies, customStrategy, ...callbacks){
-        this.mapRoute('post', path, policies, customStrategy, ...callbacks)
+    post(path, customStrategy, policies, ...callbacks){
+        this.mapRoute('post', path, customStrategy, policies, ...callbacks)
     }
-    put(path, policies, customStrategy, ...callbacks){
-        this.mapRoute('put', path, policies, customStrategy, ...callbacks)
-    }
-
-    patch(path, policies, customStrategy, ...callbacks){
-        this.mapRoute('patch', path, policies, customStrategy, ...callbacks)
+    put(path, customStrategy, policies, ...callbacks){
+        this.mapRoute('put', path, customStrategy, policies, ...callbacks)
     }
 
-    delete(path, policies, customStrategy, ...callbacks){
-        this.mapRoute('delete', path, policies, customStrategy, ...callbacks)
+    patch(path, customStrategy, policies, ...callbacks){
+        this.mapRoute('patch', path, customStrategy, policies, ...callbacks)
+    }
+
+    delete(path, customStrategy, policies, ...callbacks){
+        this.mapRoute('delete', path, customStrategy, policies, ...callbacks)
     }
 
 
