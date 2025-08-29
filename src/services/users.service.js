@@ -28,7 +28,6 @@ export class UsersService {
             email: user.email,
         }
         const accessToken = generateToken(user)
-        console.log('==== USER DEL SERVICE =====', user)
         return { accessToken, userAdapted }
     }
       
