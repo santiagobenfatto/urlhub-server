@@ -7,7 +7,7 @@ expressRouter()
 
 const permissions = { 
     ADMIN: ['GET', 'POST', 'PUT', 'DELETE'],
-    USER: ['GET'],
+    USER: ['GET', 'POST', 'PUT', 'DELETE'],
     PUBLIC: ['GET']
 }
 
@@ -84,6 +84,8 @@ export class Router {
         if (policies.includes('PUBLIC')) return next()
 
         const user = req.user
+
+        console.log('==== USER DATA POLICIES ====', user)
 
         if (!user || !permissions[user.role]?.includes(req.method)) {
             return res.sendForbidden('You do not have the required permissions')
