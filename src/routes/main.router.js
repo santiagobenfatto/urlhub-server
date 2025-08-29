@@ -85,11 +85,7 @@ export class Router {
         if (policies.includes('PUBLIC')) return next()
 
         const user = req.user
-        console.log(' ===== REQ POLICIES===== ', req )
-
-        console.log('==== USER DATA POLICIES ====', user)//undefined
-        console.log(' ==== REQ METHOD POLICIES ==== ', req.mothod)
-
+       
         if (!user || !permissions[user.role]?.includes(req.method)) {
             return res.sendForbidden('You do not have the required permissions')
         }
