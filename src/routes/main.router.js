@@ -72,6 +72,7 @@ export class Router {
                     return res.status(401).send({
                         error: info.messages ? info.messages : info.toString()
                     })
+                console.log(' ====== REQ.USER del passport ', req.user)
                 req.user = user
                 next()
             })(req, res, next)
