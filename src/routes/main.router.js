@@ -82,10 +82,14 @@ export class Router {
     }
 
     policies = (policies) => (req, res, next) => {
+        console.log('==== POLICIES ==== ', policies)
+        const policiesUPPERCASE = policies.toUpperCase()
+        console.log(' ====== POLICIES UPPERCASE ====== ',policiesUPPERCASE)
+        
         if (policies.includes('PUBLIC')) return next()
 
         const user = req.user
-       
+        console.log(' ====== USER DEL POLICIES ====== ', user)       
         if (!user || !permissions[user.role]?.includes(req.method)) {
             return res.sendForbidden('You do not have the required permissions')
         }
