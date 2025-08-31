@@ -88,9 +88,10 @@ export class Router {
         const user = req.user
         
         console.log(' ====== USER DEL POLICIES USER ROLE ====== ', user)
-        console.llog(' ===== USER ROLE: ===== ', user.role)
+        console.log(' ===== USER ROLE: ===== ', user.role)
+        const userRoleUpper = user.role.toUpperCase()
         //permissions['jwt'].includes('GET')
-        if (!user || !permissions[user.role]?.includes(req.method)) {
+        if (!user || !permissions[userRoleUpper]?.includes(req.method)) {
             return res.sendForbidden('You do not have the required permissions')
         }
 
