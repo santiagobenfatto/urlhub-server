@@ -82,14 +82,14 @@ export class Router {
     }
 
     policies = (policies) => (req, res, next) => {
-        console.log('==== POLICIES ==== ', policies)
-        const policiesUPPERCASE = policies.toUpperCase()
-        console.log(' ====== POLICIES UPPERCASE ====== ',policiesUPPERCASE)
-        
+
         if (policies.includes('PUBLIC')) return next()
 
         const user = req.user
-        console.log(' ====== USER DEL POLICIES, ESTE DEBERIA SER EN MINUSCULA Y TENER USER ROLE: ====== ', user)     
+        
+        console.log(' ====== USER DEL POLICIES USER ROLE ====== ', user)
+        console.llog(' ===== USER ROLE: ===== ', user.role)
+        //permissions['jwt'].includes('GET')
         if (!user || !permissions[user.role]?.includes(req.method)) {
             return res.sendForbidden('You do not have the required permissions')
         }
