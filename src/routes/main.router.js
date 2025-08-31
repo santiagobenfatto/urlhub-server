@@ -40,7 +40,7 @@ export class Router {
         this.router.use(passport.initialize())
     }
 
-    mapRoute(method, path, policies, customStrategy, ...callbacks){ 
+    mapRoute(method, path, customStrategy, policies, ...callbacks){ 
         this.router[method](path, this.passportStrategy(customStrategy), this.policies(policies), this.applyCallbacks(callbacks))
     }
 
@@ -89,7 +89,7 @@ export class Router {
         if (policies.includes('PUBLIC')) return next()
 
         const user = req.user
-        console.log(' ====== USER DEL POLICIES ====== ', user)       
+        console.log(' ====== USER DEL POLICIES, ESTE DEBERIA SER EN MINUSCULA Y TENER USER ROLE: ====== ', user)     
         if (!user || !permissions[user.role]?.includes(req.method)) {
             return res.sendForbidden('You do not have the required permissions')
         }
