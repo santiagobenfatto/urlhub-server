@@ -72,8 +72,10 @@ export class Router {
                     return res.status(401).send({
                         error: info.messages ? info.messages : info.toString()
                     })
-                console.log(' ====== REQ.USER del passport ', req.user)
+                
                 req.user = user
+                console.log(' ====== USER param de la strategy.', user)
+                
                 next()
             })(req, res, next)
         } else {
@@ -87,8 +89,8 @@ export class Router {
 
         const user = req.user
         
-        console.log(' ====== USER DEL POLICIES USER ROLE ====== ', user)
-        console.log(' ===== USER ROLE: ===== ', user.role)
+        console.log(' ====== USER DEL POLICIES USER ROLE ====== ', user)//undefined
+        //console.log(' ===== USER ROLE: ===== ', user.role) //no ese puede leer eporque no existe user.
         const userRoleUpper = user.role.toUpperCase()
         //permissions['jwt'].includes('GET')
         if (!user || !permissions[userRoleUpper]?.includes(req.method)) {
