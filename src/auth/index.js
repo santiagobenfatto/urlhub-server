@@ -10,14 +10,16 @@ const initializePassport = () => {
     passport.use('jwt', new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
         secretOrKey: config.privateKey
-    }, async (jwt_payload, done) => {
-        try {
-            console.log('====JWT_PAYLOAD====', jwt_payload)
-            return done(null, jwt_payload.user)
-        } catch (error) {
-            return done(error)
-        }
+    },
+        async (jwt_payload, done) => {
+            try {
+                console.log('====JWT_PAYLOAD====', jwt_payload)
+                return done(null, jwt_payload.user)
+            } catch (error) {
+                return done(error)
+            }
     }))
+    app.use(passport.initialize())
 }
 
 const cookieExtractor = req => {

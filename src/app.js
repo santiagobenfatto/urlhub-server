@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import apiV1Routes from './routes/api.v1.routes.js'
 import initializePassport from './auth/index.js'
-import passport from 'passport'
 
 const app = express()
 const httpServer = createServer(app)
@@ -23,7 +22,6 @@ app.use(cors({
 }))
 
 initializePassport()
-app.use(passport.initialize())
 
 app.use('/api/v1', apiV1Routes)
 

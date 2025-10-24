@@ -7,8 +7,8 @@ import { LinksController } from '../controllers/links.controller.js'
 
 const apiV1Routes = Router()
 
-const usersController = new UsersController()
 const linksController = new LinksController()
+const usersController = new UsersController()
 
 const linksRoutes = new LinksRoutes(linksController)
 const userRoutes = new UserRoutes(usersController)

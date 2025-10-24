@@ -1,4 +1,3 @@
-
 import { Router as expressRouter } from 'express'
 import { strategyEnum } from '../utils/passportStrategies.js'
 import passport from 'passport'
@@ -8,7 +7,7 @@ expressRouter()
 const permissions = { 
     ADMIN: ['GET', 'POST', 'PUT', 'DELETE'],
     USER: ['GET', 'POST', 'PUT', 'DELETE'],
-    PUBLIC: ['GET']
+    PUBLIC: ['GET', 'POST']
 }
 
 
@@ -36,8 +35,6 @@ export class Router {
             next()
         })
 
-        // Middleware de autenticación global con Passport
-        this.router.use(passport.initialize())
     }
 
     mapRoute(method, path, customStrategy, policies, ...callbacks){ 
@@ -67,8 +64,8 @@ export class Router {
         const strategyLOW = strategy.toLowerCase()
         if (strategyLOW === strategyEnum.JWT.toLowerCase()) {
             passport.authenticate(strategyLOW, function (err, user, info) {
+               console.log('====  USER PASSPORT STRATEGY =====', user)
                 if (err) return next(err)
-
                 if (!user)
                     return res.status(401).send({
                         error: info.messages ? info.messages : info.toString(),
@@ -76,7 +73,7 @@ export class Router {
                     })
                 
                 req.user = user
-                console.log(' ====== USER param de la strategy.', user)
+                console.log(' ====== USER param de la strategy.', user) // Por ahora nunca llegó, cae en el 401 del (!user)
                 
                 next()
             })(req, res, next)
