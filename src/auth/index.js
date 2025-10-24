@@ -23,6 +23,7 @@ const initializePassport = (app) => {
 }
 
 const cookieExtractor = req => {
+    console.log('REQ PARA COOKIES:', req)
     let token = null
     if (req && req.cookies) {
         token = req.cookies[config.cookieToken]
