@@ -26,6 +26,8 @@ const cookieExtractor = req => {
     let token = null
     if (req && req.cookies) {
         token = req.cookies[config.cookieToken]
+    } else if (req && req.headers.cookie){
+        token = req.headers.cookie.split('=')[1]
     }
     return token
 }

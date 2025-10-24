@@ -64,7 +64,8 @@ export class Router {
         const strategyLOW = strategy.toLowerCase()
         if (strategyLOW === strategyEnum.JWT.toLowerCase()) {
             passport.authenticate(strategyLOW, function (err, user, info) {
-               console.log('====  USER PASSPORT STRATEGY =====', user)
+               console.log('====  USER PASSPORT STRATEGY =====', user) //false
+               console.log('====  INFO PASSPORT STRATEGY =====', info) //
                 if (err) return next(err)
                 if (!user)
                     return res.status(401).send({
