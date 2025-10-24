@@ -6,7 +6,7 @@ import config from '../config/config.js'
 const JWTStrategy = JwtPassport.Strategy
 const ExtractJWT = JwtPassport.ExtractJwt
 
-const initializePassport = () => {
+const initializePassport = (app) => {
     passport.use('jwt', new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
         secretOrKey: config.privateKey

@@ -21,7 +21,7 @@ app.use(cors({
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
 }))
 
-initializePassport()
+initializePassport(app)
 
 app.use('/api/v1', apiV1Routes)
 
