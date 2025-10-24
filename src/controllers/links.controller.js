@@ -1,10 +1,11 @@
 import { ElementNotFound } from '../errors/custom-errors.js'
 import { linksService } from '../container.js'
 
-export class LinksController { 
+export class LinksController {
+    
     async getUserLinks(req, res) {
+        console.log('=====ESTE ES EL req.user del token desde links BACKEND=====', req.user)
         try {
-            console.log('=====ESTE ES EL req.user del token desde links BACKEND=====', req.user)
             const userId = req.user.id
 
             const result = await linksService.getUserLinks(userId)

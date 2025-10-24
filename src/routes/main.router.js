@@ -64,8 +64,8 @@ export class Router {
 
 
     passportStrategy = (strategy) => (req, res, next) => {
-        console.log('= strategies: ',strategy , ' = strategyEnum.JWT ', strategyEnum.JWT)
-        if (strategy === strategyEnum.JWT) {
+        
+        if (strategy.toLowerCase() === strategyEnum.JWT.toLowerCase()) {
             passport.authenticate(strategy, function (err, user, info) {
                 if (err) return next(err)
 
