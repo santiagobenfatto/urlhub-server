@@ -1,10 +1,10 @@
 import passport from 'passport'
-import JwtPassport from 'passport-jwt'
+import passportJwt from 'passport-jwt'
 import config from '../config/config.js'
 
 
-const JWTStrategy = JwtPassport.Strategy
-const ExtractJWT = JwtPassport.ExtractJwt
+const JWTStrategy = passportJwt.Strategy
+const ExtractJWT = passportJwt.ExtractJwt
 
 const initializePassport = (app) => {
     passport.use('jwt', new JWTStrategy({
