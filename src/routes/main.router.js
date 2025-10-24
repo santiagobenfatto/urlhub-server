@@ -71,7 +71,8 @@ export class Router {
 
                 if (!user)
                     return res.status(401).send({
-                        error: info.messages ? info.messages : info.toString()
+                        error: info.messages ? info.messages : info.toString(),
+                        message: 'User cannot set on passport.'
                     })
                 
                 req.user = user
