@@ -15,7 +15,7 @@ export class UsersController {
             const {accessToken, userAdapted} = await usersService.login({...req.body})
             
             res.cookie(
-                config.cookieToken, accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true }
+                config.cookieToken, accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: 'None' }
             ).sendSuccess({message: 'Authorized', user: userAdapted})
 
         } catch (error) {
