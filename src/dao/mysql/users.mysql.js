@@ -10,7 +10,7 @@ export class UsersMySQL {
     getByEmailRegister = async (email) => {
         try {
             const result = await this.connection.execute({
-                sql: `SELECT first_name, last_name, nickname, email, hashed_pass, role FROM users WHERE email = ?`,
+                sql: `SELECT id, first_name, last_name, nickname, email, hashed_pass, role FROM users WHERE email = ?`,
                 args: [email]
             })
 
