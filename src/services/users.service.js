@@ -21,7 +21,6 @@ export class UsersService {
             throw new IncorrectLoginCredentials('Incorrect credentials')
         }
         const userID = user.id
-        console.log('USER ID:', userID, typeof userID)
         const userAdapted = {
             id: user.id,
             first_name: user.first_name,

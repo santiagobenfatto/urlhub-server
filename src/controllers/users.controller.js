@@ -53,8 +53,9 @@ export class UsersController {
             res.clearCookie(config.cookieToken, {
             httpOnly: true,
             secure: true,
-            sameSite: 'Strict',
-            }).redirect('/')
+            sameSite: 'None',
+            }).sendSuccess({ message: 'Logout successful' })
+
         } catch (error) {
             res.sendServerError({message: `${error.message}`})
         }

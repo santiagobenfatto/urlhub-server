@@ -12,8 +12,6 @@ export class LinksMySQL {
                 sql: `SELECT * FROM links WHERE user_id = ?`,
                 args: [userId]
             })
-            console.log('DAO LINKS:', result)
-            console.log('DAO RESULT.ROWS', result.rows)
             return result.rows
         } catch (error) {
             throw new DatabaseError(`Error al obtener enlaces del usuario con ID ${userId}: ${error.message}`)
