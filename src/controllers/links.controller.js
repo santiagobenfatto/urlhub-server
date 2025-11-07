@@ -4,7 +4,6 @@ import { linksService } from '../container.js'
 export class LinksController {
     
     async getUserLinks(req, res) {
-        console.log('=====ESTE ES EL req.user del token desde links BACKEND=====', req.user)
         try {
             const userId = req.user.id
 

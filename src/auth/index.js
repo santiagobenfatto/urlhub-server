@@ -13,7 +13,6 @@ const initializePassport = (app) => {
     },
         async (jwt_payload, done) => {
             try {
-                console.log('====JWT_PAYLOAD====', jwt_payload)
                 return done(null, jwt_payload.user)
             } catch (error) {
                 return done(error)
@@ -23,7 +22,6 @@ const initializePassport = (app) => {
 }
 
 const cookieExtractor = req => {
-    console.log('REQ PARA HEADERS:', req.headers)
     let token = null
     if (req && req.cookies) {
         token = req.cookies[config.cookieToken]

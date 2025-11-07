@@ -64,18 +64,19 @@ export class Router {
         const strategyLOW = strategy.toLowerCase()
         if (strategyLOW === strategyEnum.JWT) {
             passport.authenticate(strategyLOW, function (err, user, info) {
-               console.log('====  USER PASSPORT strategyLOW =====', strategyLOW)//llega jwt OK.
+                
                 if (err) return next(err)
-                if (!user)
+                
+                    if (!user)
                     return res.status(401).send({
                         error: info.messages ? info.messages : info.toString(),
                         message: 'User cannot set on passport.'
-                    })
-                
+                })
+
                 req.user = user
-                console.log(' ====== USER param de la strategy.', user) // Por ahora nunca llegó, cae en el 401 del (!user)
-                
+
                 next()
+                
             })(req, res, next)
         } else {
             next()
@@ -88,8 +89,6 @@ export class Router {
 
         const user = req.user
         
-        console.log(' ====== USER DEL POLICIES USER ROLE ====== ', user)//undefined
-        //console.log(' ===== USER ROLE: ===== ', user.role) //no ese puede leer eporque no existe user.
         const userRoleUpper = user.role.toUpperCase()
         //permissions['jwt'].includes('GET')
         if (!user || !permissions[userRoleUpper]?.includes(req.method)) {
