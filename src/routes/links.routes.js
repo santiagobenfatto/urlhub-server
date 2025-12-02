@@ -7,6 +7,7 @@ export class LinksRoutes extends Router {
         this.init()
     }
     init() {
+        // api/v1/links/...
         this.get('/', 'JWT', ['USER'], this.linksController.getUserLinks)
         this.post('/short', 'NOTHING', ['PUBLIC'], this.linksController.addPublicLink)
         this.post('/', 'JWT', ['USER'], this.linksController.addLink)
