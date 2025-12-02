@@ -18,6 +18,31 @@ export class LinksController {
             res.sendServerError(error.message)
         }
     }
+ 
+    async addPublicLink(req, res) {
+        try {
+            const { title, big_link, icon } = req.body
+
+            if( !title || !big_link || !icon ) { 
+                return sendClientError(`Incomplete values`)
+            }
+
+             const data = {
+                big_link,
+                title,
+                icon
+            }
+
+            const result = await linksService.addPublicLink(data)
+
+            res.sendSuccess({ message: 'Link created successfully', data: result })
+        } catch (error) {
+            if (error instanceof ElementAlreadyExists) {
+                return res.sendClientError(error.message)
+            }
+            res.sendServerError(error.message)
+        }
+    }
 
     async addLink(req, res) {
         try {

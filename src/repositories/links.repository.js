@@ -7,16 +7,20 @@ export class LinksRepository {
         return await this.dao.getUserLinks(userId)
     }
 
+    async addLink(link) {
+        return await this.dao.addLink(link)
+    }
+
+    async addPublicLink(link) {
+        return await this.dao.addLink(link)
+    }
+
     async checkAlias(alias) { 
         return await this.dao.checkAlias(alias)
     }
 
     async checkLink(linkId) {
         return await this.dao.checl(linkId)
-    }
-
-    async addLink(link) {
-        return await this.dao.addLink(link)
     }
 
     async updateLink(linkId, updates) {

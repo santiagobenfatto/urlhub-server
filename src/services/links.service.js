@@ -14,7 +14,7 @@ export class LinksService {
 
     async addPublicLink(data){
         const alias = shortAlias()
-        const shortLink = `${config.selfURL}/${data.shortLink || alias}` 
+        const shortLink = `${config.selfURL}/${data.shortLink || alias}`
 
         const aliasExists = await this.linksRepository.checkAlias(alias)
         if (aliasExists) {
@@ -35,6 +35,7 @@ export class LinksService {
 
         const newData = {
             id: '',
+            user_id: data.userId,
             big_link: data.bigLink
             
         }
@@ -43,7 +44,6 @@ export class LinksService {
         data.short_link = shortLink
 
         await this.linksRepository.addLink(newData)
-
     }
 
     async updateLink(linkId, updates) {
