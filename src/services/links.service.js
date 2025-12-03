@@ -14,6 +14,7 @@ export class LinksService {
     }
 
     async addPublicLink(data){
+        console.log('data SERVICE', data)
         const linkID = newId()
         const alias = shortAlias()
         const shortLink = `${config.selfURL}/${alias}`
