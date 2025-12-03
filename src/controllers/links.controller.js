@@ -24,8 +24,8 @@ export class LinksController {
             const { bigLink } = req.body
             console.log('REQ.BODY || controllers ', req.body)
 
-            if( !big_link) { 
-                return sendClientError(`Incomplete values`)
+            if(!bigLink) { 
+                return res.sendClientError(`Incomplete values`)
             }
 
              const data = {
@@ -49,7 +49,7 @@ export class LinksController {
             const userId = req.user.id
 
             if( !title || !big_link || !icon ) { 
-                return sendClientError(`Incomplete values`)
+                return res.sendClientError(`Incomplete values`)
             }
 
              const data = {
@@ -60,7 +60,7 @@ export class LinksController {
                 alias
             }
 
-            const result = await linksService(data)
+            const result = await linksService.addLink(data)
 
             res.sendSuccess({ message: 'Link created successfully', data: result })
         } catch (error) {
