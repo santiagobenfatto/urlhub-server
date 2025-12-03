@@ -21,16 +21,14 @@ export class LinksController {
  
     async addPublicLink(req, res) {
         try {
-            const { title, big_link, icon } = req.body
+            const { big_link } = req.body
 
-            if( !title || !big_link || !icon ) { 
+            if( !big_link) { 
                 return sendClientError(`Incomplete values`)
             }
 
              const data = {
-                big_link,
-                title,
-                icon
+                big_link
             }
 
             const result = await linksService.addPublicLink(data)

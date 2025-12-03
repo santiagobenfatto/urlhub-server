@@ -47,8 +47,8 @@ export class LinksMySQL {
     addPublicLink = async (link) => {
         try {
             const result = await this.connection.execute({
-                sql: `INSERT INTO links(big_link, short_link, title, icon, alias) VALUES (?, ?, ?, ?, ?, ?)`,
-                args: [link.big_link, link.short_link, link.title, link.icon, link.alias]
+                sql: `INSERT INTO links(id, big_link, short_link, title,  alias) VALUES (?, ?, ?, ?, ?)`,
+                args: [link.id, link.big_link, link.short_link, link.title, link.alias]
             })
             return result
         } catch (error) {
@@ -60,7 +60,7 @@ export class LinksMySQL {
         try {
             const result = await this.connection.execute({
                 sql: `INSERT INTO links(user_id, big_link, short_link, title, icon, alias) VALUES (?, ?, ?, ?, ?, ?)`,
-                args: [link.user_id, link.big_link, link.short_link, link.title, link.icon, link.alias]
+                args: [link.id, link.user_id, link.big_link, link.short_link, link.title, link.icon, link.alias]
             })
             return result
         } catch (error) {

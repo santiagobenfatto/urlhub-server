@@ -20,7 +20,7 @@ export class UsersService {
         if (!validatePass) {
             throw new IncorrectLoginCredentials('Incorrect credentials')
         }
-        const userID = user.id
+        
         const userAdapted = {
             id: user.id,
             first_name: user.first_name,
