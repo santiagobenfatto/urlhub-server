@@ -21,18 +21,14 @@ export class LinksController {
  
     async addPublicLink(req, res) {
         try {
-            const { bigLink } = req.body
+            const { big_link } = req.body
             console.log('REQ.BODY || controllers ', req.body)
 
-            if(!bigLink) { 
+            if(!big_link) { 
                 return res.sendClientError(`Incomplete values`)
             }
 
-             const data = {
-                big_link: bigLink
-            }
-
-            const result = await linksService.addPublicLink(data)
+            const result = await linksService.addPublicLink(req.body)
 
             res.sendSuccess({ message: 'Link created successfully', data: result })
         } catch (error) {
