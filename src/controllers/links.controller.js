@@ -22,7 +22,7 @@ export class LinksController {
     async addPublicLink(req, res) {
         try {
             const { big_link } = req.body
-            console.log('REQ.BODY || controllers ', req.body)
+            // console.log('REQ.BODY || controllers ', req.body)
 
             if(!big_link) { 
                 return res.sendClientError(`Incomplete values`)

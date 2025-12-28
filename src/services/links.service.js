@@ -14,18 +14,18 @@ export class LinksService {
     }
 
     async addPublicLink(data){
-        console.log('data SERVICE', data)
+        // console.log('data SERVICE', data)
         const linkID = newId()
         const alias = shortAlias()
         const shortLink = `${config.selfURL}/${alias}`
 
         const aliasExists = await this.linksRepository.checkAlias(alias)
         if (aliasExists) {
-            throw new ElementAlreadyExists(`El alias '${data.alias}' ya está en uso.`)
+            throw new ElementAlreadyExists(`El alias '${alias}' ya está en uso.`)
         }
 
         const newData = {
-            big_link: data.bigLink
+            big_link: data.big_link
         }
 
         newData.id = linkID

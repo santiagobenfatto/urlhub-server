@@ -12,6 +12,7 @@ export class LinksRepository {
     }
 
     async addPublicLink(link) {
+        console.log('Repo Link Data',link)
         return await this.dao.addLink(link)
     }
 
