@@ -2,6 +2,7 @@ import config from '../config/config.js'
 import { ElementAlreadyExists, ElementNotFound } from '../errors/custom-errors.js'
 import { newId } from '../utils/generators.js'
 import { shortAlias } from '../utils/generators.js'
+import config from '../config/config.js'
 
 export class LinksService {
     constructor(linksRepository) {
@@ -32,7 +33,7 @@ export class LinksService {
         newData.id = linkID
         newData.alias = alias
         newData.short_link = shortLink
-        console.log('TIPO DEL ALIAS', typeof(alias) )
+        console.log('TIPO DEL SHORTLINK', typeof(shortLink) )
         console.log('NEW DATA DEL SERVICE', newData)
         const result = await this.linksRepository.addPublicLink(newData)
         return result
