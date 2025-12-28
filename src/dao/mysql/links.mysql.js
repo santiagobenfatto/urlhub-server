@@ -51,7 +51,8 @@ export class LinksMySQL {
                 sql: `INSERT INTO links(id, big_link, short_link, title,  alias) VALUES (?, ?, ?, ?, ?)`,
                 args: [link.id, link.big_link, link.short_link, link.title, link.alias]
             })
-            return result
+            console.log('Result DAO', result.rows[0])
+            return result.rows[0]
         } catch (error) {
             throw new DatabaseError(`Error al agregar el enlace '${link.title}': ${error.message}`)
         }
