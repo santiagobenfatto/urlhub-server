@@ -51,9 +51,10 @@ export class LinksMySQL {
                 sql: `INSERT INTO public_links (id, big_link, short_link, title, icon, alias) VALUES (?, ?, ?, ?, ?, ?)`,
                 args: [link.id, link.big_link, link.short_link, link.title, link.icon. link.alias]
             })
-            console.log('Result DAO', result.rows[0])
-            return result.rows[0]
+            console.log('Result DAO', result)
+            return result
         } catch (error) {
+            console.error("Error en addPublicLink:", error)
             throw new DatabaseError(`Error al agregar el enlace '${link.title}': ${error.message}`)
         }
     }
