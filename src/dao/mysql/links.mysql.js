@@ -25,7 +25,8 @@ export class LinksMySQL {
                 args: [alias]
             })
             console.log('result del  checkALias', result)
-            return result[0].count > 0
+            const count = result.rows[0].count
+            return count > 0
         } catch (error) {
             throw new DatabaseError(`Error al verificar existencia del alias '${alias}': ${error.message}`)
         }
