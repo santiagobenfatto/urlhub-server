@@ -1,4 +1,3 @@
-import config from '../config/config.js'
 import { ElementAlreadyExists, ElementNotFound } from '../errors/custom-errors.js'
 import { newId } from '../utils/generators.js'
 import { shortAlias } from '../utils/generators.js'
@@ -18,7 +17,7 @@ export class LinksService {
         // console.log('data SERVICE', data)
         const linkID = newId()
         const alias = shortAlias()
-        const shortLink = `${config.selfURL}/${alias}`
+        const shortLink = `${config.originURL}/${alias}`
 
         const aliasExists = await this.linksRepository.checkAlias(alias)
         if (aliasExists) {
