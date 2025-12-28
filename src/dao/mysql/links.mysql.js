@@ -48,8 +48,8 @@ export class LinksMySQL {
     addPublicLink = async (link) => {
         try {
             const result = await this.connection.execute({
-                sql: `INSERT INTO links(id, big_link, short_link, title,  alias) VALUES (?, ?, ?, ?, ?)`,
-                args: [link.id, link.big_link, link.short_link, link.title, link.alias]
+                sql: `INSERT INTO links (id, big_link, short_link, title, icon, alias) VALUES (?, ?, ?, ?, ?. ?)`,
+                args: [link.id, link.big_link, link.short_link, link.title, link.icon. link.alias]
             })
             console.log('Result DAO', result.rows[0])
             return result.rows[0]

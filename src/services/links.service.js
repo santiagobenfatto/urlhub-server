@@ -25,13 +25,14 @@ export class LinksService {
         }
 
         const newData = {
-            big_link: data.big_link
+            big_link: data.big_link,
+            icon: data.icon || ''
         }
 
         newData.id = linkID
         newData.alias = alias
         newData.short_link = shortLink
-        console.log('NEW DATA DEL SERVICE', newData)
+        //console.log('NEW DATA DEL SERVICE', newData) Hasta acá todo ok.
         const result = await this.linksRepository.addPublicLink(newData)
         return result
     }
@@ -57,7 +58,6 @@ export class LinksService {
         newData.short_link = shortLink
 
         const result = await this.linksRepository.addLink(newData)
-        console.log('result service', result)
         return result
     }
 
