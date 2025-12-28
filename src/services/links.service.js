@@ -32,7 +32,12 @@ export class LinksService {
         newData.id = linkID
         newData.alias = alias
         newData.short_link = shortLink
+        console.log('TIPO DEL ID', typeof(linkID) )
+        console.log('TIPO DEL BIGLINK', typeof(big_link) )
+        console.log('TIPO DEL alias', typeof(alias) )
+        console.log('TIPO DEL icon', typeof(newData.icon) )
         console.log('TIPO DEL SHORTLINK', typeof(shortLink) )
+        
         console.log('NEW DATA DEL SERVICE', newData)
         const result = await this.linksRepository.addPublicLink(newData)
         return result
