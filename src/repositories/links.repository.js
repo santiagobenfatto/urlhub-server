@@ -13,7 +13,7 @@ export class LinksRepository {
 
     async addPublicLink(link) {
         console.log('Repo Link Data',link)
-        return await this.dao.addLink(link)
+        return await this.dao.addPublicLink(link)
     }
 
     async checkAlias(alias) { 

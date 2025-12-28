@@ -31,7 +31,7 @@ export class LinksService {
         newData.id = linkID
         newData.alias = alias
         newData.short_link = shortLink
-
+        console.log('NEW DATA DEL SERVICE', newData)
         const result = await this.linksRepository.addPublicLink(newData)
         return result
     }
