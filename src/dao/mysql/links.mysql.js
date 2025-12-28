@@ -49,8 +49,8 @@ export class LinksMySQL {
         try {
             console.log('LINK DATA DAO ====', link)
             const result = await this.connection.execute({
-                sql: `INSERT INTO public_links (id, big_link, short_link, title, icon, alias) VALUES (?, ?, ?, ?, ?, ?) RETURNING *`,
-                args: [link.id, link.big_link, link.short_link, link.title, link.icon, link.alias]
+                sql: `INSERT INTO public_links (id, big_link, short_link, icon, alias) VALUES (?, ?, ?, ?, ?) RETURNING *`,
+                args: [link.id, link.big_link, link.short_link, link.icon, link.alias]
             })
             console.log('Result DAO', result.rows[0])
             return result.rows[0]
