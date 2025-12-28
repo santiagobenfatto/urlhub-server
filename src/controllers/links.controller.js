@@ -27,7 +27,7 @@ export class LinksController {
             if(!big_link) { 
                 return res.sendClientError(`Incomplete values`)
             }
-            
+
             const result = await linksService.addPublicLink(req.body)
 
             res.sendSuccess({ message: 'Link created successfully', data: result })

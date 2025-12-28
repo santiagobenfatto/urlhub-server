@@ -57,6 +57,7 @@ export class LinksService {
         newData.short_link = shortLink
 
         const result = await this.linksRepository.addLink(newData)
+        console.log('result service', result)
         return result
     }
 

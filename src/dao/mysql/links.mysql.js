@@ -6,7 +6,7 @@ export class LinksMySQL {
         this.connection = connection
     }
 
-    getUserLinks = async (userId) => {
+    async getUserLinks (userId) {
         try {
             const result = await this.connection.execute({
                 sql: `SELECT * FROM links WHERE user_id = ?`,
@@ -24,8 +24,8 @@ export class LinksMySQL {
                 sql: `SELECT COUNT(*) AS count FROM links WHERE alias = ?`,
                 args: [alias]
             })
-            console.log('result del  checkALias', result)
             const count = result.rows[0].count
+            console.log(count > 0)
             return count > 0
         } catch (error) {
             throw new DatabaseError(`Error al verificar existencia del alias '${alias}': ${error.message}`)
