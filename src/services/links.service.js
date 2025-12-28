@@ -43,7 +43,7 @@ export class LinksService {
       
         const aliasExists = await this.linksRepository.checkAlias(alias)
         if (aliasExists) {
-            throw new ElementAlreadyExists(`El alias '${data.alias}' ya está en uso.`)
+            throw new ElementAlreadyExists(`El alias '${alias}' ya está en uso.`)
         }
 
         const newData = {
