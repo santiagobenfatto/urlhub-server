@@ -25,7 +25,7 @@ export class LinksMySQL {
                 args: [alias]
             })
             const count = result.rows[0].count
-            console.log('Count:', count > 0)
+            //Return boolean
             return count > 0
         } catch (error) {
             throw new DatabaseError(`Error al verificar existencia del alias '${alias}': ${error.message}`)
@@ -38,8 +38,9 @@ export class LinksMySQL {
                 sql: `SELECT COUNT(*) AS count FROM links WHERE id = ?`,
                 args: [linkId]
             })
-
-            return result[0].count > 0
+            const count = result[0].rows[0].count
+            //Return boolean
+            return count > 0
         } catch (error) {
             throw new DatabaseError(`Error al verificar existencia del link ID '${linkId}': ${error.message}`)
         }
@@ -47,12 +48,10 @@ export class LinksMySQL {
 
     addPublicLink = async (link) => {
         try {
-            console.log('LINK DATA DAO ====', link)
             const result = await this.connection.execute({
-                sql: `INSERT INTO public_links (id, big_link, short_link, icon, alias) VALUES (?, ?, ?, ?, ?) RETURNING *`,
-                args: [link.id, link.big_link, link.short_link, link.icon, link.alias]
+                sql: `INSERT INTO public_links (id, big_link, short_link, alias) VALUES (?, ?, ?, ?) RETURNING *`,
+                args: [link.id, link.big_link, link.short_link, link.alias]
             })
-            console.log('Result DAO', result.rows[0])
             return result.rows[0]
         } catch (error) {
             console.error("Error en addPublicLink:", error)
@@ -63,10 +62,10 @@ export class LinksMySQL {
     addLink = async (link) => {
         try {
             const result = await this.connection.execute({
-                sql: `INSERT INTO links(user_id, big_link, short_link, title, icon, alias) VALUES (?, ?, ?, ?, ?, ?)`,
+                sql: `INSERT INTO links(id, user_id, big_link, short_link, title, icon, alias) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING *`,
                 args: [link.id, link.user_id, link.big_link, link.short_link, link.title, link.icon, link.alias]
             })
-            return result
+            return result.rows[0]
         } catch (error) {
             throw new DatabaseError(`Error al agregar el enlace '${link.title}': ${error.message}`)
         }
