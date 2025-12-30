@@ -18,7 +18,7 @@ app.use(cookieParser())
 app.use(cors({
     credentials: true,
     origin: originURL,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS']
 }))
 
 initializePassport(app)

@@ -28,7 +28,7 @@ export class LinksController {
             }
 
             const result = await linksService.addPublicLink(req.body)
-
+            console.log('Public Link Data:', result)
             res.sendSuccess({ message: 'Link created successfully', data: result })
         } catch (error) {
             if (error instanceof ElementAlreadyExists) {
