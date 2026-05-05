@@ -35,7 +35,7 @@ export class UsersService {
     
     async register(userCredentials) {
         const checkUser = await this.usersRepository.checkUser(userCredentials.email_register)
-        
+        console.log('USER CREDENTIALS EN SERVICE::', userCredentials)
         if(checkUser){
             throw new UserAlreadyExists('The email already exists')
         }
@@ -58,7 +58,7 @@ export class UsersService {
 
         
         const result = await this.usersRepository.create(newUser)
-        
+        console.log('RESULT REGISTER SERVICE', result)
         return result
     }
 
