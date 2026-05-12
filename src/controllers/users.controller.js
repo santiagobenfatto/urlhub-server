@@ -1,6 +1,7 @@
 import { UserNotFound, UserAlreadyExists, IncorrectLoginCredentials } from '../errors/custom-errors.js'
 import { usersService } from '../container.js'
 import config from '../config/config.js'
+import logger from '../utils/logger.js'
 
 
 export class UsersController {
@@ -13,7 +14,9 @@ export class UsersController {
             }
 
             const {accessToken, userAdapted} = await usersService.login({...req.body})
-            
+
+            logger.info('User logged in', { userId: userAdapted.id, email: userAdapted.email })
+
             res.cookie(
                 config.cookieToken, accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: 'None' }
             ).sendSuccess({message: 'Authorized', user: userAdapted})
@@ -38,7 +41,9 @@ export class UsersController {
             }
                         
             await usersService.register({ ...req.body })
-            
+
+            logger.info('User registered via controller', { email: email_register })
+
             res.sendSuccess({message: `User with email: ${email_register} registered`})
         } catch (error) {
             if(error instanceof UserAlreadyExists){

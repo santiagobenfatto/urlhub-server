@@ -1,5 +1,6 @@
-import { ElementNotFound } from '../errors/custom-errors.js'
+import { ElementNotFound, ElementAlreadyExists } from '../errors/custom-errors.js'
 import { linksService } from '../container.js'
+import logger from '../utils/logger.js'
 
 export class LinksController {
     
@@ -28,7 +29,7 @@ export class LinksController {
             }
 
             const result = await linksService.addPublicLink(req.body)
-            console.log('Public Link Data:', result)
+            logger.info('Public link created via controller', { result })
             res.sendSuccess({ message: 'Link created successfully', data: result })
         } catch (error) {
             if (error instanceof ElementAlreadyExists) {
@@ -56,6 +57,8 @@ export class LinksController {
             }
 
             const result = await linksService.addLink(data)
+
+            logger.info('Link created via controller', { userId, linkId: result?.id })
 
             res.sendSuccess({ message: 'Link created successfully', data: result })
         } catch (error) {
@@ -100,7 +103,9 @@ export class LinksController {
             return res.sendClientError('Missing link ID in request URL')
         }
 
-        const result = await linksService.removeLink(linkId)
+            const result = await linksService.removeLink(linkId)
+
+            logger.info('Link removed', { linkId })
 
         res.sendSuccess({
             message: 'Link removed successfully',

@@ -1,8 +1,9 @@
 import { CannotDelete, DatabaseError } from '../../errors/custom-errors.js'
+import logger from '../../utils/logger.js'
 
 export class LinksMySQL {
     constructor(connection) {
-        console.log('Working LinksDB with MySQL')
+        logger.info('LinksDAO initialized')
         this.connection = connection
     }
 

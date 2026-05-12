@@ -1,25 +1,31 @@
 import { LinksMySQL } from './dao/mysql/links.mysql.js'
 import { UsersMySQL } from './dao/mysql/users.mysql.js'
+import { HubsMySQL } from './dao/mysql/hubs.mysql.js'
 import { turso } from './dao/db.config.js'
 
 const linksMySQL = new LinksMySQL(turso)
 const usersMySQL = new UsersMySQL(turso)
+const hubsMySQL = new HubsMySQL(turso)
 
 //Repositories
 
 import { LinksRepository } from './repositories/links.repository.js'
 import { UsersRepository } from './repositories/users.repository.js'
+import { HubsRepository } from './repositories/hubs.repository.js'
 
 const linksRepository = new LinksRepository(linksMySQL)
 const usersRepository = new UsersRepository(usersMySQL)
+const hubsRepository = new HubsRepository(hubsMySQL)
 
 //Services
 
 import { LinksService } from './services/links.service.js'
 import { UsersService } from './services/users.service.js'
+import { HubsService } from './services/hubs.service.js'
 
 export const linksService = new LinksService(linksRepository)
 export const usersService = new UsersService(usersRepository)
+export const hubsService = new HubsService(hubsRepository)
 
 //Controllers
 

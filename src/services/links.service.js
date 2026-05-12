@@ -2,6 +2,7 @@ import { ElementAlreadyExists, ElementNotFound } from '../errors/custom-errors.j
 import { newId } from '../utils/generators.js'
 import { shortAlias } from '../utils/generators.js'
 import config from '../config/config.js'
+import logger from '../utils/logger.js'
 
 export class LinksService {
     constructor(linksRepository) {
@@ -33,6 +34,9 @@ export class LinksService {
         newData.short_link = shortLink
 
         const result = await this.linksRepository.addPublicLink(newData)
+
+        logger.info('Public link created', { linkId: linkID, alias })
+
         return result
     }
 
@@ -57,6 +61,9 @@ export class LinksService {
         newData.short_link = shortLink
 
         const result = await this.linksRepository.addLink(newData)
+
+        logger.info('Link created', { linkId: linkID, alias, userId: data.userId })
+
         return result
     }
 

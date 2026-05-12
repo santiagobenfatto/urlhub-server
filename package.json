@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/app.js",
     "start": "nodemon src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx mocha --file src/test/setup.js 'src/test/**/*.test.js'",
+    "test:watch": "npx mocha --file src/test/setup.js --watch 'src/test/**/*.test.js'"
   },
   "keywords": [],
   "author": "santidev",
@@ -23,6 +24,13 @@
     "nanoid": "^5.1.5",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "chai": "^6.2.2",
+    "mocha": "^11.7.5",
+    "sinon": "^22.0.0",
+    "supertest": "^7.2.2"
   }
 }

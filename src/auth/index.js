@@ -1,6 +1,7 @@
 import passport from 'passport'
 import passportJwt from 'passport-jwt'
 import config from '../config/config.js'
+import logger from '../utils/logger.js'
 
 
 const JWTStrategy = passportJwt.Strategy
@@ -13,12 +14,15 @@ const initializePassport = (app) => {
     },
         async (jwt_payload, done) => {
             try {
+                logger.debug('JWT authenticated', { userId: jwt_payload.user?.id })
                 return done(null, jwt_payload.user)
             } catch (error) {
+                logger.error('JWT authentication error', { error: error.message })
                 return done(error)
             }
     }))
     app.use(passport.initialize())
+    logger.info('Passport initialized with JWT strategy')
 }
 
 const cookieExtractor = req => {

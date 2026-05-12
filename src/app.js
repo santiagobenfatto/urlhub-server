@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import apiV1Routes from './routes/api.v1.routes.js'
 import initializePassport from './auth/index.js'
+import logger, { requestLogger } from './utils/logger.js'
 
 const app = express()
 const httpServer = createServer(app)
@@ -21,13 +22,17 @@ app.use(cors({
     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS'
 }))
 
+app.use(requestLogger)
+
 initializePassport(app)
 
 app.use('/api/v1', apiV1Routes)
 
 
-httpServer.listen(PORT, () => {
-    console.log(
-        `============ Server starting, running on port ${PORT} ============`
-    )
-})
+export default app
+
+if (process.env.NODE_ENV !== 'test') {
+    httpServer.listen(PORT, () => {
+        logger.info(`Server started on port ${PORT}`)
+    })
+}

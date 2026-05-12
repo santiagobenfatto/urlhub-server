@@ -1,9 +1,10 @@
 import { DatabaseError, UserAlreadyExists, UserNotFound } from '../../errors/custom-errors.js'
+import logger from '../../utils/logger.js'
 
 
 export class UsersMySQL {
     constructor(connection) {
-        console.log('Working UsersDB with MySQL')
+        logger.info('UsersDAO initialized')
         this.connection = connection
     }
 

@@ -1,6 +1,7 @@
 import { UserNotFound, UserAlreadyExists, IncorrectLoginCredentials } from '../errors/custom-errors.js'
 import { newId } from '../utils/generators.js'
 import { createHash, generateToken, passwordValidation } from '../utils/utils.js'
+import logger from '../utils/logger.js'
 
 export class UsersService {
     constructor(usersRepository) {
@@ -31,7 +32,6 @@ export class UsersService {
         const accessToken = generateToken(user)
         return { accessToken, userAdapted }
     }
-      
     
     async register(userCredentials) {
         const checkUser = await this.usersRepository.checkUser(userCredentials.email_register)
@@ -40,7 +40,7 @@ export class UsersService {
             throw new UserAlreadyExists('The email already exists')
         }
         if ('role' in userCredentials) {
-            console.warn(`Attempt to assign a role in request body: ${userCredentials.role}`)
+            logger.warn('Attempt to assign role in request body', { role: userCredentials.role })
         }
 
         const newUser = {
