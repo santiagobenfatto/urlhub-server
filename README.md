@@ -196,8 +196,8 @@ npm run test:watch         # Run in watch mode
 | Suite | Tests | What's covered |
 |-------|-------|----------------|
 | Hubs | 10 | CRUD hubs + hub_links, auth guard, not-found errors |
-| Links | 10 | CRUD links, public short links, auth guard, validation |
-| Users | 12 | Register, login, logout, duplicate/user-not-found/password errors, auth guard |
+| Links | 11 | CRUD links, public short links, auth guard, validation |
+| Users | 9 | Register, login, logout, duplicate/user-not-found/password errors, auth guard |
 
 Tests validate the full HTTP pipeline (routes → middleware → controllers → response formatting) without requiring a real database. Each test stubs the relevant service method using sinon and restores after each case.
 
