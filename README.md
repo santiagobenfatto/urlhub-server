@@ -83,6 +83,7 @@ src/
 Edge-hosted on **Turso**. Schema (`src/sql/init.sql`):
 
 ```
+public_links                 # Public short links (no auth)
 users     ──1:N── links      # Users own links
 users     ──1:1── hubs       # Each user has one hub
 hubs      ──1:N── hub_links  # Links organized inside hubs
