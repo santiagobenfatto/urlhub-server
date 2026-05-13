@@ -53,6 +53,7 @@ export class LinksMySQL {
                 sql: `INSERT INTO public_links (id, big_link, short_link, alias) VALUES (?, ?, ?, ?) RETURNING *`,
                 args: [link.id, link.big_link, link.short_link, link.alias]
             })
+            console.log(result)
             return result.rows[0]
         } catch (error) {
             console.error("Error en addPublicLink:", error)
