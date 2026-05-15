@@ -17,7 +17,7 @@ const prodFormat = winston.format.combine(
 
 const logger = winston.createLogger({
     level: config.logLevel || 'info',
-    format: process.env.NODE_ENV === 'production' ? prodFormat : devFormat,
+    format: config.nodeEnv === 'production' ? prodFormat : devFormat,
     transports: [
         new winston.transports.Console(),
         new winston.transports.File({

@@ -13,5 +13,6 @@ export default {
     tursoDB: process.env.TURSO_DB_URL,
     authToken: process.env.TURSO_AUTH_TOKEN,
     originURL: process.env.ORIGIN_URL,
-    logLevel: process.env.LOG_LEVEL || 'info'
+    logLevel: process.env.LOG_LEVEL || 'info',
+    nodeEnv: environment
 }
