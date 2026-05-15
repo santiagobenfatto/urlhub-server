@@ -43,6 +43,7 @@ export class LinksController {
         try {
             const { title, big_link, icon, alias } = req.body
             const userId = req.user.id
+            logger.debug('THIS IS THE USER ID:', req.user)
 
             if( !title || !big_link || !icon ) { 
                 return res.sendClientError(`Incomplete values`)
