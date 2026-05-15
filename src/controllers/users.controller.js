@@ -53,8 +53,9 @@ export class UsersController {
         }
     }
 
-    async logout(req, res){ 
+    async logout(req, res){
         try {
+            console.log('REQ.USER logout:', req.user)
             res.clearCookie(config.cookieToken, {
             httpOnly: true,
             secure: true,
