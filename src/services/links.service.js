@@ -43,7 +43,7 @@ export class LinksService {
     async addLink(data) {
         const linkID = newId()
         const alias = data.alias || shortAlias()
-        const shortLink = `${config.selfURL}/${alias}` 
+        const shortLink = `${config.originURL}/${alias}` 
       
         const aliasExists = await this.linksRepository.checkAlias(alias)
         if (aliasExists) {
@@ -51,9 +51,10 @@ export class LinksService {
         }
 
         const newData = {
-            user_id: data.userId,
-            big_link: data.bigLink
-            
+            user_id: data.user_id,
+            big_link: data.big_link,
+            title: data.title,
+            icon: data.icon || ''
         }
 
         newData.id = linkID
@@ -62,7 +63,7 @@ export class LinksService {
 
         const result = await this.linksRepository.addLink(newData)
 
-        logger.info('Link created', { linkId: linkID, alias, userId: data.userId })
+        logger.info('Link created', { linkId: linkID, alias, userId: data.user_id })
 
         return result
     }
