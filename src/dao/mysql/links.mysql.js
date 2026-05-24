@@ -39,7 +39,7 @@ export class LinksMySQL {
                 sql: `SELECT COUNT(*) AS count FROM links WHERE id = ?`,
                 args: [linkId]
             })
-            const count = result[0].rows[0].count
+            const count = result.rows[0].count
             //Return boolean
             return count > 0
         } catch (error) {
@@ -57,7 +57,7 @@ export class LinksMySQL {
             return result.rows[0]
         } catch (error) {
             console.error("Error en addPublicLink:", error)
-            throw new DatabaseError(`Error al agregar el enlace '${link.title}': ${error.message}`)
+            throw new DatabaseError(`Error al agregar el enlace '${link.big_link}': ${error.message}`)
         }
     }
 

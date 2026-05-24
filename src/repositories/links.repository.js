@@ -20,7 +20,7 @@ export class LinksRepository {
     }
 
     async checkLink(linkId) {
-        return await this.dao.checl(linkId)
+        return await this.dao.checkLink(linkId)
     }
 
     async updateLink(linkId, updates) {

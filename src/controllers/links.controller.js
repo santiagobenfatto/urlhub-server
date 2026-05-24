@@ -53,7 +53,7 @@ export class LinksController {
                 title,
                 big_link,
                 icon,
-                alias
+                alias: alias || ''
             }
 
             const result = await linksService.addLink(data)
@@ -93,7 +93,6 @@ export class LinksController {
             res.sendServerError(error.message)
         }
     }
-
         
     async removeLink(req, res) {
     try {
