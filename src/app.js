@@ -11,14 +11,25 @@ import logger, { requestLogger } from './utils/logger.js'
 const app = express()
 const httpServer = createServer(app)
 const PORT = config.port || 3001
-const originURL = config.originURL
+const allowedOrigins = [
+    config.originURL,
+    /^https:\/\/urlhub-test\.vercel\.app$/,
+    /^https:\/\/urlhub-test-.*\.vercel\.app$/,
+]
+
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(`${__dirname}/public`))
 app.use(cookieParser())
 app.use(cors({
     credentials: true,
-    origin: originURL,
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.some(o => o instanceof RegExp ? o.test(origin) : o === origin)) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS'
 }))
 

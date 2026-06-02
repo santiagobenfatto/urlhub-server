@@ -79,6 +79,7 @@ export class LinksController {
             }
 
             if (!updates || Object.keys(updates).length === 0) {
+                 
                 return res.sendClientError('No fields provided for update')
             }
 
