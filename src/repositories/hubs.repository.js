@@ -43,6 +43,14 @@ export class HubsRepository {
         return await this.dao.getHubLinks(hubId)
     }
 
+    async getPublicHub(hubId) {
+        return await this.dao.getPublicHub(hubId)
+    }
+
+    async getPublicHubByAlias(alias) {
+        return await this.dao.getPublicHubByAlias(alias)
+    }
+
     async updateLinkOrder(hubId, linkId, orderIndex) {
         return await this.dao.updateLinkOrder(hubId, linkId, orderIndex)
     }

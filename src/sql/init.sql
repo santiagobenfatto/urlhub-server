@@ -12,7 +12,7 @@ hub_id TEXT NOT NULL,
 link_id TEXT NOT NULL,                                                           
 order_index INTEGER DEFAULT 0,                                                   
 FOREIGN KEY (hub_id) REFERENCES hubs(id),                                        
-FOREIGN KEY (link_id) REFERENCES links(id),                                      
+FOREIGN KEY (link_id) REFERENCES links(id) ON DELETE CASCADE,                                      
 UNIQUE(hub_id, link_id)                                                          
 );
 

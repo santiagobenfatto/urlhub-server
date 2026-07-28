@@ -156,4 +156,39 @@ describe('Hubs — Integration', () => {
             expect(res.body.data.data).to.have.lengthOf(2)
         })
     })
+
+    describe('GET /api/v1/hubs/public/:hubId', () => {
+        it('returns hub with links', async () => {
+            const mockPublicHub = {
+                name: 'My Hub',
+                links: [{ id: 'link-1', title: 'Google', shortLink: 'http://localhost:5173/abc12', icon: 'search' }]
+            }
+            sinon.stub(hubsService, 'getPublicHub').resolves(mockPublicHub)
+
+            const res = await request.get('/api/v1/hubs/public/hub-1')
+
+            expect(res.status).to.equal(200)
+            expect(res.body.data.data.name).to.equal('My Hub')
+            expect(res.body.data.data.links).to.have.lengthOf(1)
+        })
+
+        it('returns hub with empty links array', async () => {
+            const mockPublicHub = { name: 'Empty Hub', links: [] }
+            sinon.stub(hubsService, 'getPublicHub').resolves(mockPublicHub)
+
+            const res = await request.get('/api/v1/hubs/public/hub-2')
+
+            expect(res.status).to.equal(200)
+            expect(res.body.data.data.name).to.equal('Empty Hub')
+            expect(res.body.data.data.links).to.deep.equal([])
+        })
+
+        it('returns 400 when hub does not exist', async () => {
+            sinon.stub(hubsService, 'getPublicHub').rejects(new (await import('../errors/custom-errors.js')).ElementNotFound('not found'))
+
+            const res = await request.get('/api/v1/hubs/public/nonexistent')
+
+            expect(res.status).to.equal(400)
+        })
+    })
 })

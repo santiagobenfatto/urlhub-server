@@ -8,6 +8,8 @@ export class HubsRoutes extends Router {
     }
     init() {
         // api/v1/hubs/...
+        this.get('/public/alias/:alias', 'NOTHING', ['PUBLIC'], this.hubsController.getPublicHubByAlias)
+        this.get('/public/:hubId', 'NOTHING', ['PUBLIC'], this.hubsController.getPublicHub)
         this.get('/', 'JWT', ['USER'], this.hubsController.getUserHubs)
         this.get('/:hubId', 'JWT', ['USER'], this.hubsController.getHubById)
         this.post('/', 'JWT', ['USER'], this.hubsController.createHub)

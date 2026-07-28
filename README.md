@@ -1,22 +1,34 @@
-# URLHub Server
+# URLHub
 
-A URL shortener API built with **Express 5**, **Turso (libSQL)**, and **Passport JWT** authentication. Users can create short links, organize them into hubs, and manage their collections through a secure REST API.
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Runtime | Node.js 22+ (ESM) |
-| Framework | Express 5 |
-| Database | Turso (libSQL — edge-ready SQLite) |
-| Auth | Passport.js + JWT (cookie-based) |
-| Logging | Winston (console + file, structured JSON) |
-| Testing | Mocha + Chai + Supertest + Sinon |
-| ID Generation | UUID v4 + nanoid |
+A URL shortener with a **Vite/React frontend** and **Express backend**. Users can create short links, organize them into hubs, and share public hub pages. Built with **Express 5**, **Turso (libSQL)**, and **Passport JWT** authentication.
 
 ## Architecture
 
-The project follows a **5-layer architecture** with strict separation of concerns:
+The application runs as **two separate processes**:
+
+| Service | Stack | Port |
+|---------|-------|------|
+| Frontend | Vite + React | `5173` |
+| Backend | Express 5 + Turso | `3001` |
+
+The backend exposes a REST API and a redirect endpoint. The frontend consumes the API and provides the user-facing hub pages.
+
+### Short Link Format
+
+Short links use two different base URLs depending on context:
+
+| Entity | Format | Purpose |
+|--------|--------|---------|
+| **Hub** `short_link` | `{ORIGIN_URL}/{alias}` | Points to the **frontend** (public hub page) |
+| **Link** `short_link` | `{BACKEND_URL}/{alias}` | Points to the **backend** (redirect endpoint) |
+
+For example, with `ORIGIN_URL=http://localhost:5173` and `BACKEND_URL=http://localhost:3001`:
+- A hub short link: `http://localhost:5173/aB3xYz`
+- A link short link: `http://localhost:3001/aB3xYz`
+
+### Backend Layers
+
+The backend follows a **5-layer architecture** with strict separation of concerns:
 
 ```
 Route → Controller → Service → Repository → DAO → Database
@@ -45,7 +57,8 @@ src/
 ├── controllers/              # Request/response handling
 │   ├── users.controller.js
 │   ├── links.controller.js
-│   └── hubs.controller.js
+│   ├── hubs.controller.js
+│   └── redirect.controller.js # Alias-based redirect
 ├── routes/                   # Route definitions with auth & policy middleware
 │   ├── main.router.js        # Base Router class (auth strategies, policies)
 │   ├── api.v1.routes.js      # API v1 route aggregator
@@ -68,15 +81,17 @@ src/
     └── users.test.js
 ```
 
-### Data Flow
+## Tech Stack
 
-1. **Route** matches the HTTP method + path and applies auth/policy middleware
-2. **Middleware chain** authenticates via Passport JWT and verifies user role
-3. **Request logger** records method, path, status, duration, and userId for every request
-4. **Controller** extracts input (`req.body`, `req.params`, `req.user`), validates, delegates to service
-5. **Service** executes business logic (existence checks, ID generation, alias creation), logs domain events
-6. **Repository** delegates to the DAO (enables swapping data sources)
-7. **DAO** executes raw parameterized SQL against Turso
+| Layer | Technology |
+|-------|-----------|
+| Runtime | Node.js 22+ (ESM) |
+| Framework | Express 5 |
+| Database | Turso (libSQL -- edge-ready SQLite) |
+| Auth | Passport.js + JWT (cookie-based) |
+| Logging | Winston (console + file, structured JSON) |
+| Testing | Mocha + Chai + Supertest + Sinon |
+| ID Generation | UUID v4 + nanoid |
 
 ## Database
 
@@ -90,25 +105,45 @@ hubs      ──1:N── hub_links  # Links organized inside hubs
 links     ──1:N── hub_links  # Links can appear in hub_links
 ```
 
+> **Note:** A hub is automatically created with the title "My Hub" when a new user registers.
+
 ### Push schema to Turso
 
 ```bash
 turso db push --file ./src/sql/init.sql --db urlhubdb
 ```
 
+### Migrating Existing Data
+
+If you have existing data with `short_link` values pointing to the old URL scheme, run these commands to migrate:
+
+```bash
+turso db shell urlhubdb "UPDATE links SET short_link = REPLACE(short_link, 'http://localhost:5173', 'http://localhost:3001')"
+turso db shell urlhubdb "UPDATE public_links SET short_link = REPLACE(short_link, 'http://localhost:5173', 'http://localhost:3001')"
+turso db shell urlhubdb "UPDATE hubs SET short_link = REPLACE(short_link, 'http://localhost:3001', 'http://localhost:5173')"
+```
+
+This updates links to point to the backend and hubs to point to the frontend.
+
 ## API Endpoints
 
 All protected endpoints require a JWT cookie (`auth_token`) obtained via login.
+
+### Redirect
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/:alias` | Looks up alias in both `links` and `public_links`, then **302 redirects** to the original URL |
 
 ### Users (`/api/v1/users`)
 
 | Method | Path | Auth | Role | Description |
 |--------|------|------|------|-------------|
-| POST | `/register` | — | PUBLIC | Register a new user |
-| POST | `/login` | — | PUBLIC | Login, returns JWT cookie |
-| POST | `/login/auth/verify` | — | PUBLIC | Verify auth token validity |
+| POST | `/register` | -- | PUBLIC | Register a new user (hub auto-created) |
+| POST | `/login` | -- | PUBLIC | Login, returns JWT cookie |
+| POST | `/auth/verify` | -- | PUBLIC | Verify auth token validity |
 | POST | `/logout` | JWT | USER | Clear auth cookie |
-| DELETE | `/delete` | — | ADMIN | Delete user by email |
+| DELETE | `/delete` | -- | ADMIN | Delete user by email |
 
 ### Links (`/api/v1/links`)
 
@@ -116,15 +151,18 @@ All protected endpoints require a JWT cookie (`auth_token`) obtained via login.
 |--------|------|------|------|-------------|
 | GET | `/` | JWT | USER | Get all links for authenticated user |
 | POST | `/` | JWT | USER | Create a new short link |
-| POST | `/short` | — | PUBLIC | Create a public short link |
-| PUT | `/:linkId` | JWT | USER | Update a link |
+| POST | `/short` | -- | PUBLIC | Create a public short link |
+| PATCH | `/migrate` | JWT | USER | Migrate a public link to the authenticated user |
+| PUT | `/:linkId` | JWT | USER | Update a link (partial updates supported -- send only the fields you want to update) |
 | DELETE | `/:linkId` | JWT | USER | Delete a link |
 
 ### Hubs (`/api/v1/hubs`)
 
 | Method | Path | Auth | Role | Description |
 |--------|------|------|------|-------------|
-| POST | `/` | JWT | USER | Create a hub (one per user) |
+| GET | `/public/:hubId` | -- | PUBLIC | Get public hub by ID (returns `{ name, links: [{ id, title, shortLink, icon }] }`) |
+| GET | `/public/alias/:alias` | -- | PUBLIC | Get public hub by alias |
+| POST | `/` | JWT | USER | Create a hub (one per user, auto-created on registration) |
 | GET | `/` | JWT | USER | Get all hubs for authenticated user |
 | GET | `/:hubId` | JWT | USER | Get hub by ID |
 | PUT | `/:hubId` | JWT | USER | Update hub title/alias/short_link |
@@ -143,6 +181,13 @@ Set-Cookie: auth_token=<jwt>; Max-Age=3600; HttpOnly; Secure; SameSite=None
 ```
 
 Supported roles: `ADMIN`, `USER`, `PUBLIC` (unauthenticated).
+
+## Deployment
+
+| Service | Platform | URL |
+|---------|----------|-----|
+| Frontend | Vercel | [urlhub.vercel.app](https://urlhub.vercel.app) |
+| Backend | Render | `urlhub.dev` (custom domain) |
 
 ## Getting Started
 
@@ -164,13 +209,14 @@ npm install
 cp .env.dev .env   # or create .env.prod for production
 ```
 
-Environment variables (`.env.dev`):
+### Environment Variables
 
 | Variable | Description |
 |----------|-------------|
 | `TURSO_DB_URL` | Turso database URL (libsql://...) |
 | `TURSO_AUTH_TOKEN` | Turso auth token |
-| `ORIGIN_URL` | Allowed CORS origin (e.g. `http://localhost:5173`) |
+| `ORIGIN_URL` | Frontend URL (e.g. `http://localhost:5173`) |
+| `BACKEND_URL` | Backend URL (e.g. `http://localhost:3001`) |
 | `PRIVATE_KEY` | JWT signing secret |
 | `COOKIE_TOKEN` | Cookie name for JWT (optional) |
 | `PORT` | Server port (default: 3001) |
@@ -179,8 +225,12 @@ Environment variables (`.env.dev`):
 ### Run
 
 ```bash
+# Backend (this repo)
 npm run dev      # Development with nodemon
 npm start        # Start server
+
+# Frontend (separate repo/process)
+# Runs on port 5173 via Vite dev server
 ```
 
 ## Testing
@@ -200,7 +250,7 @@ npm run test:watch         # Run in watch mode
 | Links | 11 | CRUD links, public short links, auth guard, validation |
 | Users | 9 | Register, login, logout, duplicate/user-not-found/password errors, auth guard |
 
-Tests validate the full HTTP pipeline (routes → middleware → controllers → response formatting) without requiring a real database. Each test stubs the relevant service method using sinon and restores after each case.
+Tests validate the full HTTP pipeline (routes -> middleware -> controllers -> response formatting) without requiring a real database. Each test stubs the relevant service method using sinon and restores after each case.
 
 ## Scripts
 
@@ -237,4 +287,4 @@ npm run test:watch # Run tests in watch mode
 
 ## License
 
-ISC — © santiagobenfatto
+ISC -- (c) santiagobenfatto

@@ -1,4 +1,4 @@
-import { ElementNotFound, ElementAlreadyExists } from '../errors/custom-errors.js'
+import { ElementNotFound, ElementAlreadyExists, URLError } from '../errors/custom-errors.js'
 import { linksService } from '../container.js'
 import logger from '../utils/logger.js'
 
@@ -32,6 +32,9 @@ export class LinksController {
             logger.info('Public link created via controller', { result })
             res.sendSuccess({ message: 'Link created successfully', data: result })
         } catch (error) {
+            if (error instanceof URLError) {
+                return res.sendClientError(error.message)
+            }
             if (error instanceof ElementAlreadyExists) {
                 return res.sendClientError(error.message)
             }
@@ -62,6 +65,9 @@ export class LinksController {
 
             res.sendSuccess({ message: 'Link created successfully', data: result })
         } catch (error) {
+            if (error instanceof URLError) {
+                return res.sendClientError(error.message)
+            }
             if (error instanceof ElementAlreadyExists) {
                 return res.sendClientError(error.message)
             }
@@ -72,7 +78,7 @@ export class LinksController {
     async updateLink(req, res) {
         try {
             const { linkId } = req.params
-            const { updates } = req.body
+            const updates = req.body
 
             if(!linkId){
                 return res.sendClientError('Missing link ID in the request URL')
@@ -84,6 +90,7 @@ export class LinksController {
             }
 
             const result = await linksService.updateLink(linkId, updates)
+            console.log('result', result)
             
             res.sendSuccess({ message: 'Link updated successfully', data: result })
             
@@ -95,6 +102,28 @@ export class LinksController {
         }
     }
         
+    async migratePublicLink(req, res) {
+        try {
+            const { linkId } = req.body
+            const userId = req.user.id
+
+            if (!linkId) {
+                return res.sendClientError('Missing linkId in request body')
+            }
+
+            const result = await linksService.migratePublicLink(userId, linkId)
+
+            logger.info('Public link migrated via controller', { linkId, userId })
+
+            res.sendSuccess({ message: 'Link migrated successfully', data: result })
+        } catch (error) {
+            if (error instanceof ElementNotFound) {
+                return res.sendClientError(error.message)
+            }
+            res.sendServerError(error.message)
+        }
+    }
+
     async removeLink(req, res) {
     try {
         const { linkId } = req.params

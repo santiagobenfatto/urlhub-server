@@ -1,5 +1,5 @@
 import { UserNotFound, UserAlreadyExists, IncorrectLoginCredentials } from '../errors/custom-errors.js'
-import { usersService } from '../container.js'
+import { usersService, hubsService } from '../container.js'
 import config from '../config/config.js'
 import logger from '../utils/logger.js'
 
@@ -40,7 +40,16 @@ export class UsersController {
                 return res.sendClientError({message: 'Incomplete values'})
             }
                         
-            await usersService.register({ ...req.body })
+            const result = await usersService.register({ ...req.body })
+
+            const userId = result.id
+
+            try {
+                await hubsService.createHub({ userId, title: 'My Hub' })
+                logger.info('Hub auto-created for new user', { userId })
+            } catch (hubError) {
+                logger.warn('Failed to auto-create hub for new user', { userId, error: hubError.message })
+            }
 
             logger.info('User registered via controller', { email: email_register })
 

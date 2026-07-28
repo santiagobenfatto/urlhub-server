@@ -131,6 +131,55 @@ export class HubsMySQL {
         }
     }
 
+    async getPublicHub(hubId) {
+        try {
+            const hubResult = await this.connection.execute({
+                sql: `SELECT title AS name FROM hubs WHERE id = ?`,
+                args: [hubId]
+            })
+
+            if (hubResult.rows.length === 0) {
+                return null
+            }
+
+            const name = hubResult.rows[0].name
+
+            const linksResult = await this.connection.execute({
+                sql: `SELECT l.id, l.title, l.short_link, l.icon
+                      FROM hub_links hl
+                      JOIN links l ON hl.link_id = l.id
+                      WHERE hl.hub_id = ?
+                      ORDER BY hl.order_index ASC`,
+                args: [hubId]
+            })
+
+            const links = linksResult.rows.map(({ id, title, short_link, icon }) => ({
+                id, title, shortLink: short_link, icon
+            }))
+
+            return { name, links }
+        } catch (error) {
+            throw new DatabaseError(`Error al obtener hub público con ID ${hubId}: ${error.message}`)
+        }
+    }
+
+    async getPublicHubByAlias(alias) {
+        try {
+            const result = await this.connection.execute({
+                sql: `SELECT id FROM hubs WHERE alias = ?`,
+                args: [alias]
+            })
+
+            if (result.rows.length === 0) {
+                return null
+            }
+
+            return this.getPublicHub(result.rows[0].id)
+        } catch (error) {
+            throw new DatabaseError(`Error al obtener hub público con alias '${alias}': ${error.message}`)
+        }
+    }
+
     async updateLinkOrder(hubId, linkId, orderIndex) {
         try {
             const result = await this.connection.execute({

@@ -46,3 +46,10 @@ export class DatabaseError extends Error {
         this.name = this.constructor.name
     }
 }
+
+export class URLError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = this.constructor.name
+    }
+}

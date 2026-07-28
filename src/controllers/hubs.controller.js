@@ -62,6 +62,44 @@ export class HubsController {
         }
     }
 
+    async getPublicHub(req, res) {
+        try {
+            const { hubId } = req.params
+
+            if (!hubId) {
+                return res.sendClientError('Missing hub ID in the request URL')
+            }
+
+            const result = await hubsService.getPublicHub(hubId)
+
+            res.sendSuccess({ message: 'Hub retrieved successfully', data: result })
+        } catch (error) {
+            if (error instanceof ElementNotFound) {
+                return res.sendClientError(error.message)
+            }
+            res.sendServerError(error.message)
+        }
+    }
+
+    async getPublicHubByAlias(req, res) {
+        try {
+            const { alias } = req.params
+
+            if (!alias) {
+                return res.sendClientError('Missing alias in the request URL')
+            }
+
+            const result = await hubsService.getPublicHubByAlias(alias)
+
+            res.sendSuccess({ message: 'Hub retrieved successfully', data: result })
+        } catch (error) {
+            if (error instanceof ElementNotFound) {
+                return res.sendClientError(error.message)
+            }
+            res.sendServerError(error.message)
+        }
+    }
+
     async updateHub(req, res) {
         try {
             const { hubId } = req.params

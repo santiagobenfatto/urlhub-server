@@ -59,7 +59,7 @@ export class UsersService {
         
         const result = await this.usersRepository.create(newUser)
         logger.debug('Register result:', result)
-        return result
+        return { id: userId }
     }
 
     async deleteByEmailRegister(email_register) {

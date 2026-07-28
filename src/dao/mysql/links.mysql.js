@@ -13,6 +13,7 @@ export class LinksMySQL {
                 sql: `SELECT * FROM links WHERE user_id = ?`,
                 args: [userId]
             })
+            
             return result.rows
         } catch (error) {
             throw new DatabaseError(`Error al obtener enlaces del usuario con ID ${userId}: ${error.message}`)
@@ -53,7 +54,6 @@ export class LinksMySQL {
                 sql: `INSERT INTO public_links (id, big_link, short_link, alias) VALUES (?, ?, ?, ?) RETURNING *`,
                 args: [link.id, link.big_link, link.short_link, link.alias]
             })
-            console.log(result)
             return result.rows[0]
         } catch (error) {
             console.error("Error en addPublicLink:", error)
@@ -75,13 +75,57 @@ export class LinksMySQL {
 
     updateLink = async (linkId, updates) => {
         try {
+            const allowedFields = ['title', 'icon', 'alias', 'short_link']
+            const fields = []
+            const args = []
+
+            for (const [key, value] of Object.entries(updates)) {
+                if (allowedFields.includes(key) && value !== undefined) {
+                    fields.push(`${key} = ?`)
+                    args.push(value)
+                }
+            }
+
+            if (fields.length === 0) {
+                throw new DatabaseError('No valid fields provided for update')
+            }
+
+            args.push(linkId)
             const result = await this.connection.execute({
-                sql: `UPDATE links SET title = ?, icon = ?, alias = ? WHERE id = ?`,
-                args: [updates.title, updates.icon, updates.alias, linkId]
+                sql: `UPDATE links SET ${fields.join(', ')} WHERE id = ?`,
+                args
             })
             return result
         } catch (error) {
             throw new DatabaseError(`Error al actualizar el enlace con ID ${linkId}: ${error.message}`)
+        }
+    }
+
+    getPublicLink = async (linkId) => {
+        try {
+            const result = await this.connection.execute({
+                sql: `SELECT * FROM public_links WHERE id = ?`,
+                args: [linkId]
+            })
+            return result.rows[0] || null
+        } catch (error) {
+            throw new DatabaseError(`Error al obtener el enlace público con ID ${linkId}: ${error.message}`)
+        }
+    }
+
+    migratePublicLink = async (userId, publicLink) => {
+        try {
+            await this.connection.execute({
+                sql: `INSERT INTO links(id, user_id, big_link, short_link, alias) VALUES (?, ?, ?, ?, ?)`,
+                args: [publicLink.id, userId, publicLink.big_link, publicLink.short_link, publicLink.alias]
+            })
+            await this.connection.execute({
+                sql: `DELETE FROM public_links WHERE id = ?`,
+                args: [publicLink.id]
+            })
+            return { id: publicLink.id, user_id: userId, big_link: publicLink.big_link, short_link: publicLink.short_link, alias: publicLink.alias }
+        } catch (error) {
+            throw new DatabaseError(`Error al migrar el enlace público con ID ${publicLink.id}: ${error.message}`)
         }
     }
 
@@ -94,6 +138,32 @@ export class LinksMySQL {
             return result
         } catch (error) {
             throw new CannotDelete(`Error al eliminar el enlace con ID ${linkId}: ${error.message}`)
+        }
+    }
+
+    getLinkByAlias = async (alias) => {
+        try {
+            let result = await this.connection.execute({
+                sql: `SELECT big_link, alias FROM links WHERE alias = ?`,
+                args: [alias]
+            })
+
+            if (result.rows.length > 0) {
+                return result.rows[0]
+            }
+
+            result = await this.connection.execute({
+                sql: `SELECT big_link, alias FROM public_links WHERE alias = ?`,
+                args: [alias]
+            })
+
+            if (result.rows.length > 0) {
+                return result.rows[0]
+            }
+
+            return null
+        } catch (error) {
+            throw new DatabaseError(`Error al buscar enlace por alias '${alias}': ${error.message}`)
         }
     }
 }

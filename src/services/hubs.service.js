@@ -19,7 +19,7 @@ export class HubsService {
 
         const hubId = newId()
         const alias = shortAlias()
-        const shortLink = `${config.selfURL || config.originURL}/${alias}`
+        const shortLink = `${config.originURL}/${alias}`
 
         const newHub = {
             id: hubId,
@@ -89,6 +89,26 @@ export class HubsService {
 
     async getHubLinks(hubId) {
         const result = await this.hubsRepository.getHubLinks(hubId)
+        return result
+    }
+
+    async getPublicHub(hubId) {
+        const result = await this.hubsRepository.getPublicHub(hubId)
+
+        if (!result) {
+            throw new ElementNotFound(`El hub con ID ${hubId} no existe.`)
+        }
+
+        return result
+    }
+
+    async getPublicHubByAlias(alias) {
+        const result = await this.hubsRepository.getPublicHubByAlias(alias)
+
+        if (!result) {
+            throw new ElementNotFound(`El hub con alias '${alias}' no existe.`)
+        }
+
         return result
     }
 

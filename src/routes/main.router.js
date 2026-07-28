@@ -5,8 +5,8 @@ import passport from 'passport'
 expressRouter()
 
 const permissions = { 
-    ADMIN: ['GET', 'POST', 'PUT', 'DELETE'],
-    USER: ['GET', 'POST', 'PUT', 'DELETE'],
+    ADMIN: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    USER: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     PUBLIC: ['GET', 'POST']
 }
 

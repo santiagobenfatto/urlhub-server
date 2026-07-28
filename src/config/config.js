@@ -13,6 +13,7 @@ export default {
     tursoDB: process.env.TURSO_DB_URL,
     authToken: process.env.TURSO_AUTH_TOKEN,
     originURL: process.env.ORIGIN_URL,
+    backendURL: process.env.BACKEND_URL,
     mongoLogsUri: process.env.MONGO_LOGS_URI,
     branch: process.env.VERCEL_GIT_COMMIT_REF || process.env.BRANCH || 'local',
     logLevel: process.env.LOG_LEVEL || 'info',

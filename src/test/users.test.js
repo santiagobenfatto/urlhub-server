@@ -3,7 +3,7 @@ import supertest from 'supertest'
 import sinon from 'sinon'
 
 import app from '../app.js'
-import { usersService } from '../container.js'
+import { usersService, hubsService } from '../container.js'
 import { generateTestToken } from './helpers/auth.js'
 
 const request = supertest(app)
@@ -21,7 +21,8 @@ describe('Users — Integration', () => {
 
     describe('POST /api/v1/users/register', () => {
         it('registers a new user successfully', async () => {
-            sinon.stub(usersService, 'register').resolves()
+            sinon.stub(usersService, 'register').resolves({ id: 'new-user-id' })
+            sinon.stub(hubsService, 'createHub').resolves({ id: 'hub-new', title: 'My Hub' })
 
             const res = await request
                 .post('/api/v1/users/register')
@@ -29,6 +30,8 @@ describe('Users — Integration', () => {
 
             expect(res.status).to.equal(200)
             expect(res.body.data.message).to.equal('User with email: test@example.com registered')
+            expect(hubsService.createHub.calledOnce).to.be.true
+            expect(hubsService.createHub.firstCall.args[0].userId).to.equal('new-user-id')
         })
 
         it('rejects registration with existing email', async () => {
