@@ -20,7 +20,7 @@ export class LinksService {
 
         const linkID = newId()
         const alias = shortAlias()
-        const shortLink = `${config.backendURL}/${alias}`
+        const shortLink = `${config.originURL}/${alias}`
 
         const aliasExists = await this.linksRepository.checkAlias(alias)
         if (aliasExists) {
@@ -48,7 +48,7 @@ export class LinksService {
 
         const linkID = newId()
         const alias = data.alias || shortAlias()
-        const shortLink = `${config.backendURL}/${alias}`
+        const shortLink = `${config.originURL}/${alias}`
       
         const aliasExists = await this.linksRepository.checkAlias(alias)
         if (aliasExists) {
@@ -81,7 +81,7 @@ export class LinksService {
         }
 
         if (updates.alias) {
-            updates.short_link = `${config.backendURL}/${updates.alias}`
+            updates.short_link = `${config.originURL}/${updates.alias}`
         }
 
         const result = await this.linksRepository.updateLink(linkId, updates)
