@@ -51,8 +51,8 @@ export class LinksMySQL {
     addPublicLink = async (link) => {
         try {
             const result = await this.connection.execute({
-                sql: `INSERT INTO public_links (id, big_link, short_link, alias) VALUES (?, ?, ?, ?) RETURNING *`,
-                args: [link.id, link.big_link, link.short_link, link.alias]
+                sql: `INSERT INTO public_links (id, big_link, alias) VALUES (?, ?, ?) RETURNING *`,
+                args: [link.id, link.big_link, link.alias]
             })
             return result.rows[0]
         } catch (error) {
@@ -64,8 +64,8 @@ export class LinksMySQL {
     addLink = async (link) => {
         try {
             const result = await this.connection.execute({
-                sql: `INSERT INTO links(id, user_id, big_link, short_link, title, icon, alias) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING *`,
-                args: [link.id, link.user_id, link.big_link, link.short_link, link.title, link.icon, link.alias]
+                sql: `INSERT INTO links(id, user_id, big_link,  title, icon, alias) VALUES ( ?, ?, ?, ?, ?, ?) RETURNING *`,
+                args: [link.id, link.user_id, link.big_link, link.title, link.icon, link.alias]
             })
             return result.rows[0]
         } catch (error) {
@@ -75,7 +75,7 @@ export class LinksMySQL {
 
     updateLink = async (linkId, updates) => {
         try {
-            const allowedFields = ['title', 'icon', 'alias', 'short_link']
+            const allowedFields = ['title', 'icon', 'alias']
             const fields = []
             const args = []
 
@@ -116,14 +116,14 @@ export class LinksMySQL {
     migratePublicLink = async (userId, publicLink) => {
         try {
             await this.connection.execute({
-                sql: `INSERT INTO links(id, user_id, big_link, short_link, alias) VALUES (?, ?, ?, ?, ?)`,
-                args: [publicLink.id, userId, publicLink.big_link, publicLink.short_link, publicLink.alias]
+                sql: `INSERT INTO links(id, user_id, big_link, alias) VALUES (?, ?, ?, ?, ?)`,
+                args: [publicLink.id, userId, publicLink.big_link, publicLink.alias]
             })
             await this.connection.execute({
                 sql: `DELETE FROM public_links WHERE id = ?`,
                 args: [publicLink.id]
             })
-            return { id: publicLink.id, user_id: userId, big_link: publicLink.big_link, short_link: publicLink.short_link, alias: publicLink.alias }
+            return { id: publicLink.id, user_id: userId, big_link: publicLink.big_link, alias: publicLink.alias }
         } catch (error) {
             throw new DatabaseError(`Error al migrar el enlace público con ID ${publicLink.id}: ${error.message}`)
         }

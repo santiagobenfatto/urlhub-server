@@ -56,7 +56,7 @@ export class HubsController {
             res.sendSuccess({ message: 'Hub retrieved successfully', data: result })
         } catch (error) {
             if (error instanceof ElementNotFound) {
-                return res.sendClientError(error.message)
+                return res.status(404).json({ error: error.message })
             }
             res.sendServerError(error.message)
         }
@@ -75,7 +75,7 @@ export class HubsController {
             res.sendSuccess({ message: 'Hub retrieved successfully', data: result })
         } catch (error) {
             if (error instanceof ElementNotFound) {
-                return res.sendClientError(error.message)
+                return res.status(404).json({ error: error.message })
             }
             res.sendServerError(error.message)
         }
@@ -94,7 +94,7 @@ export class HubsController {
             res.sendSuccess({ message: 'Hub retrieved successfully', data: result })
         } catch (error) {
             if (error instanceof ElementNotFound) {
-                return res.sendClientError(error.message)
+                return res.status(404).json({ error: error.message })
             }
             res.sendServerError(error.message)
         }

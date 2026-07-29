@@ -20,7 +20,6 @@ export class LinksService {
 
         const linkID = newId()
         const alias = shortAlias()
-        const shortLink = `${config.originURL}/${alias}`
 
         const aliasExists = await this.linksRepository.checkAlias(alias)
         if (aliasExists) {
@@ -34,7 +33,6 @@ export class LinksService {
 
         newData.id = linkID
         newData.alias = alias
-        newData.short_link = shortLink
 
         const result = await this.linksRepository.addPublicLink(newData)
 
@@ -48,7 +46,6 @@ export class LinksService {
 
         const linkID = newId()
         const alias = data.alias || shortAlias()
-        const shortLink = `${config.originURL}/${alias}`
       
         const aliasExists = await this.linksRepository.checkAlias(alias)
         if (aliasExists) {
@@ -64,7 +61,6 @@ export class LinksService {
 
         newData.id = linkID
         newData.alias = alias
-        newData.short_link = shortLink
 
         const result = await this.linksRepository.addLink(newData)
 
@@ -78,10 +74,6 @@ export class LinksService {
 
         if(!checkLink) { 
             throw new ElementNotFound(`El link ID ${linkId} no existe.`)
-        }
-
-        if (updates.alias) {
-            updates.short_link = `${config.originURL}/${updates.alias}`
         }
 
         const result = await this.linksRepository.updateLink(linkId, updates)

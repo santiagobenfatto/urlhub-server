@@ -10,8 +10,8 @@ export class HubsMySQL {
     async createHub(hub) {
         try {
             const result = await this.connection.execute({
-                sql: `INSERT INTO hubs (id, user_id, title, alias, short_link) VALUES (?, ?, ?, ?, ?) RETURNING *`,
-                args: [hub.id, hub.user_id, hub.title, hub.alias, hub.short_link]
+                sql: `INSERT INTO hubs (id, user_id, title, alias) VALUES (?, ?, ?, ?) RETURNING *`,
+                args: [hub.id, hub.user_id, hub.title, hub.alias]
             })
             return result.rows[0]
         } catch (error) {
@@ -50,8 +50,8 @@ export class HubsMySQL {
     async updateHub(hubId, updates) {
         try {
             const result = await this.connection.execute({
-                sql: `UPDATE hubs SET title = ?, alias = ?, short_link = ? WHERE id = ?`,
-                args: [updates.title, updates.alias, updates.short_link, hubId]
+                sql: `UPDATE hubs SET title = ?, alias = ? WHERE id = ?`,
+                args: [updates.title, updates.alias, hubId]
             })
             return result
         } catch (error) {
@@ -145,7 +145,7 @@ export class HubsMySQL {
             const name = hubResult.rows[0].name
 
             const linksResult = await this.connection.execute({
-                sql: `SELECT l.id, l.title, l.short_link, l.icon
+                sql: `SELECT l.id, l.title, l.icon
                       FROM hub_links hl
                       JOIN links l ON hl.link_id = l.id
                       WHERE hl.hub_id = ?
@@ -153,8 +153,8 @@ export class HubsMySQL {
                 args: [hubId]
             })
 
-            const links = linksResult.rows.map(({ id, title, short_link, icon }) => ({
-                id, title, shortLink: short_link, icon
+            const links = linksResult.rows.map(({ id, title, icon }) => ({
+                id, title, icon
             }))
 
             return { name, links }

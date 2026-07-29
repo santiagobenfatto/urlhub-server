@@ -19,14 +19,12 @@ export class HubsService {
 
         const hubId = newId()
         const alias = shortAlias()
-        const shortLink = `${config.originURL}/${alias}`
 
         const newHub = {
             id: hubId,
             user_id: userId,
             title: data.title,
             alias,
-            short_link: shortLink
         }
 
         const result = await this.hubsRepository.createHub(newHub)
