@@ -19,28 +19,29 @@ export class LinksController {
             res.sendServerError(error.message)
         }
     }
- 
-    async addPublicLink(req, res) {
-        try {
-            const { big_link } = req.body
+    
+    // ========= DEPRECATED ========
+    // async addPublicLink(req, res) {
+    //     try {
+    //         const { big_link } = req.body
 
-            if(!big_link) { 
-                return res.sendClientError(`Incomplete values`)
-            }
+    //         if(!big_link) { 
+    //             return res.sendClientError(`Incomplete values`)
+    //         }
 
-            const result = await linksService.addPublicLink(req.body)
-            logger.info('Public link created via controller', { result })
-            res.sendSuccess({ message: 'Link created successfully', data: result })
-        } catch (error) {
-            if (error instanceof URLError) {
-                return res.sendClientError(error.message)
-            }
-            if (error instanceof ElementAlreadyExists) {
-                return res.sendClientError(error.message)
-            }
-            res.sendServerError(error.message)
-        }
-    }
+    //         const result = await linksService.addPublicLink(req.body)
+    //         logger.info('Public link created via controller', { result })
+    //         res.sendSuccess({ message: 'Link created successfully', data: result })
+    //     } catch (error) {
+    //         if (error instanceof URLError) {
+    //             return res.sendClientError(error.message)
+    //         }
+    //         if (error instanceof ElementAlreadyExists) {
+    //             return res.sendClientError(error.message)
+    //         }
+    //         res.sendServerError(error.message)
+    //     }
+    // }
 
     async addLink(req, res) {
         try {
@@ -101,28 +102,30 @@ export class LinksController {
             res.sendServerError(error.message)
         }
     }
-        
-    async migratePublicLink(req, res) {
-        try {
-            const { linkId } = req.body
-            const userId = req.user.id
+    
 
-            if (!linkId) {
-                return res.sendClientError('Missing linkId in request body')
-            }
+    // ========= DEPRECATED ========
+    // async migratePublicLink(req, res) {
+    //     try {
+    //         const { linkId } = req.body
+    //         const userId = req.user.id
 
-            const result = await linksService.migratePublicLink(userId, linkId)
+    //         if (!linkId) {
+    //             return res.sendClientError('Missing linkId in request body')
+    //         }
 
-            logger.info('Public link migrated via controller', { linkId, userId })
+    //         const result = await linksService.migratePublicLink(userId, linkId)
 
-            res.sendSuccess({ message: 'Link migrated successfully', data: result })
-        } catch (error) {
-            if (error instanceof ElementNotFound) {
-                return res.sendClientError(error.message)
-            }
-            res.sendServerError(error.message)
-        }
-    }
+    //         logger.info('Public link migrated via controller', { linkId, userId })
+
+    //         res.sendSuccess({ message: 'Link migrated successfully', data: result })
+    //     } catch (error) {
+    //         if (error instanceof ElementNotFound) {
+    //             return res.sendClientError(error.message)
+    //         }
+    //         res.sendServerError(error.message)
+    //     }
+    // }
 
     async removeLink(req, res) {
     try {

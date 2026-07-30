@@ -105,7 +105,7 @@ export class LinksService {
         return result
     }
 
-    async redirectByAlias(alias) {
+    async resolveAlias(alias) {
         const result = await this.linksRepository.getLinkByAlias(alias)
 
         if (!result) {

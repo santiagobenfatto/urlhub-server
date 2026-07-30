@@ -27,11 +27,12 @@ export class Router {
     initMiddlewares() {
         // Middleware para respuestas personalizadas
         this.router.use((req, res, next) => {
-            res.sendSuccess = (data) => res.status(200).json({ data })
-            res.sendClientError = (error) => res.status(400).json({ error })
-            res.sendUnauthorized = (error) => res.status(401).json({ error })
-            res.sendForbidden = (error) => res.status(403).json({ error })
-            res.sendServerError = (error) => res.status(500).json({ error })
+            res.sendSuccess = (data) => res.status(200).json( data )
+            res.sendClientError = (message) => res.status(400).json({ error: message })
+            res.sendUnauthorized = (message) => res.status(401).json({ error: message })
+            res.sendForbidden = (message) => res.status(403).json({ error: message })
+            res.sendNotFound = (message) => res.status(404).json({ error: message })
+            res.sendServerError = (message) => res.status(500).json({ error: message })
             next()
         })
 
@@ -58,7 +59,6 @@ export class Router {
     delete(path, customStrategy, policies, ...callbacks){
         this.mapRoute('delete', path, customStrategy, policies, ...callbacks)
     }
-
 
     passportStrategy = (strategy) => (req, res, next) => {
         const strategyLOW = strategy.toLowerCase()

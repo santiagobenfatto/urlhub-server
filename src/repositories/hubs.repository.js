@@ -14,6 +14,22 @@ export class HubsRepository {
     async getHubById(hubId) {
         return await this.dao.getHubById(hubId)
     }
+    
+    async getHubByAlias(alias) {
+        return await this.dao.getHubByAlias(alias)
+    }
+
+    async getHubLinks(hubId) {
+        return await this.dao.getHubLinks(hubId)
+    }
+
+    async getPublicHub(hubId) {
+        return await this.dao.getPublicHub(hubId)
+    }
+
+    async getPublicHubByAlias(alias) {
+        return await this.dao.getPublicHubByAlias(alias)
+    }
 
     async updateHub(hubId, updates) {
         return await this.dao.updateHub(hubId, updates)
@@ -37,18 +53,6 @@ export class HubsRepository {
 
     async removeLinkFromHub(hubId, linkId) {
         return await this.dao.removeLinkFromHub(hubId, linkId)
-    }
-
-    async getHubLinks(hubId) {
-        return await this.dao.getHubLinks(hubId)
-    }
-
-    async getPublicHub(hubId) {
-        return await this.dao.getPublicHub(hubId)
-    }
-
-    async getPublicHubByAlias(alias) {
-        return await this.dao.getPublicHubByAlias(alias)
     }
 
     async updateLinkOrder(hubId, linkId, orderIndex) {

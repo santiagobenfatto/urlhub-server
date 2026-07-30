@@ -47,19 +47,19 @@ export class LinksMySQL {
             throw new DatabaseError(`Error al verificar existencia del link ID '${linkId}': ${error.message}`)
         }
     }
-
-    addPublicLink = async (link) => {
-        try {
-            const result = await this.connection.execute({
-                sql: `INSERT INTO public_links (id, big_link, alias) VALUES (?, ?, ?) RETURNING *`,
-                args: [link.id, link.big_link, link.alias]
-            })
-            return result.rows[0]
-        } catch (error) {
-            console.error("Error en addPublicLink:", error)
-            throw new DatabaseError(`Error al agregar el enlace '${link.big_link}': ${error.message}`)
-        }
-    }
+    //======== NO LONGER AVAIBLE, DEPRECATED METHOD =========
+    // addPublicLink = async (link) => {
+    //     try {
+    //         const result = await this.connection.execute({
+    //             sql: `INSERT INTO public_links (id, big_link, alias) VALUES (?, ?, ?) RETURNING *`,
+    //             args: [link.id, link.big_link, link.alias]
+    //         })
+    //         return result.rows[0]
+    //     } catch (error) {
+    //         console.error("Error en addPublicLink:", error)
+    //         throw new DatabaseError(`Error al agregar el enlace '${link.big_link}': ${error.message}`)
+    //     }
+    // }
 
     addLink = async (link) => {
         try {
@@ -101,33 +101,36 @@ export class LinksMySQL {
         }
     }
 
-    getPublicLink = async (linkId) => {
-        try {
-            const result = await this.connection.execute({
-                sql: `SELECT * FROM public_links WHERE id = ?`,
-                args: [linkId]
-            })
-            return result.rows[0] || null
-        } catch (error) {
-            throw new DatabaseError(`Error al obtener el enlace público con ID ${linkId}: ${error.message}`)
-        }
-    }
 
-    migratePublicLink = async (userId, publicLink) => {
-        try {
-            await this.connection.execute({
-                sql: `INSERT INTO links(id, user_id, big_link, alias) VALUES (?, ?, ?, ?, ?)`,
-                args: [publicLink.id, userId, publicLink.big_link, publicLink.alias]
-            })
-            await this.connection.execute({
-                sql: `DELETE FROM public_links WHERE id = ?`,
-                args: [publicLink.id]
-            })
-            return { id: publicLink.id, user_id: userId, big_link: publicLink.big_link, alias: publicLink.alias }
-        } catch (error) {
-            throw new DatabaseError(`Error al migrar el enlace público con ID ${publicLink.id}: ${error.message}`)
-        }
-    }
+    // ========= DEPRECATED ========
+    // getPublicLink = async (linkId) => {
+    //     try {
+    //         const result = await this.connection.execute({
+    //             sql: `SELECT * FROM public_links WHERE id = ?`,
+    //             args: [linkId]
+    //         })
+    //         return result.rows[0] || null
+    //     } catch (error) {
+    //         throw new DatabaseError(`Error al obtener el enlace público con ID ${linkId}: ${error.message}`)
+    //     }
+    // }
+     
+    // ========= DEPRECATED ========
+    // migratePublicLink = async (userId, publicLink) => {
+    //     try {
+    //         await this.connection.execute({
+    //             sql: `INSERT INTO links(id, user_id, big_link, alias) VALUES (?, ?, ?, ?, ?)`,
+    //             args: [publicLink.id, userId, publicLink.big_link, publicLink.alias]
+    //         })
+    //         await this.connection.execute({
+    //             sql: `DELETE FROM public_links WHERE id = ?`,
+    //             args: [publicLink.id]
+    //         })
+    //         return { id: publicLink.id, user_id: userId, big_link: publicLink.big_link, alias: publicLink.alias }
+    //     } catch (error) {
+    //         throw new DatabaseError(`Error al migrar el enlace público con ID ${publicLink.id}: ${error.message}`)
+    //     }
+    // }
 
     removeLink = async (linkId) => {
         try {
@@ -148,20 +151,8 @@ export class LinksMySQL {
                 args: [alias]
             })
 
-            if (result.rows.length > 0) {
-                return result.rows[0]
-            }
+            return result.rows[0]
 
-            result = await this.connection.execute({
-                sql: `SELECT big_link, alias FROM public_links WHERE alias = ?`,
-                args: [alias]
-            })
-
-            if (result.rows.length > 0) {
-                return result.rows[0]
-            }
-
-            return null
         } catch (error) {
             throw new DatabaseError(`Error al buscar enlace por alias '${alias}': ${error.message}`)
         }

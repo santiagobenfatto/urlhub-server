@@ -7,7 +7,7 @@ import cors from 'cors'
 import apiV1Routes from './routes/api.v1.routes.js'
 import initializePassport from './auth/index.js'
 import logger, { requestLogger } from './utils/logger.js'
-import { RedirectController } from './controllers/redirect.controller.js'
+import { AliasResolverController } from './controllers/alias.controller.js'
 
 const app = express()
 const httpServer = createServer(app)
@@ -40,10 +40,15 @@ initializePassport(app)
 
 app.use('/api/v1', apiV1Routes)
 
-const redirectController = new RedirectController()
+// Alias resolver - business logic
 app.get('/:alias', (req, res, next) => {
-    if (req.params.alias.includes('.')) return next()
-    redirectController.redirectByAlias(req, res)
+    const { alias } = req.params
+    const aliasResolverController = new AliasResolverController()
+    if (alias.includes('.')) {
+        return next()
+    }
+
+    return aliasResolverController.resolveAlias(req, res)
 })
 
 

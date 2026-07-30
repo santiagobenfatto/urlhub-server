@@ -22,10 +22,12 @@ const hubsRepository = new HubsRepository(hubsMySQL)
 import { LinksService } from './services/links.service.js'
 import { UsersService } from './services/users.service.js'
 import { HubsService } from './services/hubs.service.js'
+import { AliasResolverService } from './services/alias.service.js'
 
 export const linksService = new LinksService(linksRepository)
 export const usersService = new UsersService(usersRepository)
 export const hubsService = new HubsService(hubsRepository)
+export const aliasResolverService = new AliasResolverService(linksRepository, hubsRepository)
 
 //Controllers
 
