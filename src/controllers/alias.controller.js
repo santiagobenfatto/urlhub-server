@@ -13,11 +13,11 @@ export class AliasResolverController {
             logger.info('Alias resolved', {
                 alias,
                 type: result.type,
-                id: result.data?.id,
+                id: result.id,
                 ip: req.ip
             })
 
-            return res.sendSuccess(result)
+            return res.status(200).json(result)
 
         } catch (error) {
 
@@ -38,7 +38,7 @@ export class AliasResolverController {
                 error: error.message
             })
 
-            return res.sendServerError({
+            return res.status(500).json({
                 error: 'Internal server error'
             })
         }

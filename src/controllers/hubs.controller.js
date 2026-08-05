@@ -81,6 +81,7 @@ export class HubsController {
         }
     }
 
+    // ========= DEPRECATED: use root GET /:alias =========
     async getPublicHubByAlias(req, res) {
         try {
             const { alias } = req.params

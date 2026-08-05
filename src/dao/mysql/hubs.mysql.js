@@ -145,7 +145,7 @@ export class HubsMySQL {
             const name = hubResult.rows[0].name
 
             const linksResult = await this.connection.execute({
-                sql: `SELECT l.id, l.title, l.icon
+                sql: `SELECT l.id, l.title, l.icon, l.alias
                       FROM hub_links hl
                       JOIN links l ON hl.link_id = l.id
                       WHERE hl.hub_id = ?
@@ -153,8 +153,8 @@ export class HubsMySQL {
                 args: [hubId]
             })
 
-            const links = linksResult.rows.map(({ id, title, icon }) => ({
-                id, title, icon
+            const links = linksResult.rows.map(({ id, title, icon, alias }) => ({
+                id, title, icon, alias
             }))
 
             return { name, links }
@@ -163,7 +163,7 @@ export class HubsMySQL {
         }
     }
 
-    async getPublicHubByAlias(alias) {
+    async getHubByAlias(alias) {
         try {
             const result = await this.connection.execute({
                 sql: `SELECT id FROM hubs WHERE alias = ?`,
@@ -176,8 +176,13 @@ export class HubsMySQL {
 
             return this.getPublicHub(result.rows[0].id)
         } catch (error) {
-            throw new DatabaseError(`Error al obtener hub público con alias '${alias}': ${error.message}`)
+            throw new DatabaseError(`Error al obtener hub con alias '${alias}': ${error.message}`)
         }
+    }
+
+    // ========= DEPRECATED: use getHubByAlias =========
+    async getPublicHubByAlias(alias) {
+        return this.getHubByAlias(alias)
     }
 
     async updateLinkOrder(hubId, linkId, orderIndex) {

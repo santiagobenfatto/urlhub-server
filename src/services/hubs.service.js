@@ -30,7 +30,7 @@ export class HubsService {
         const result = await this.hubsRepository.createHub(newHub)
 
         logger.info('Hub created', { hubId, userId })
-
+        console.log('RESULT del create hub:', result) // ok
         return result
     }
 

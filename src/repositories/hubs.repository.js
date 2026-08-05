@@ -27,6 +27,7 @@ export class HubsRepository {
         return await this.dao.getPublicHub(hubId)
     }
 
+    // ========= DEPRECATED: use getHubByAlias =========
     async getPublicHubByAlias(alias) {
         return await this.dao.getPublicHubByAlias(alias)
     }

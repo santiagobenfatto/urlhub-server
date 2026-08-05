@@ -3,7 +3,8 @@ import supertest from 'supertest'
 import sinon from 'sinon'
 
 import app from '../app.js'
-import { linksService } from '../container.js'
+import { linksService, aliasResolverService } from '../container.js'
+import { ElementNotFound } from '../errors/custom-errors.js'
 import { generateTestToken } from './helpers/auth.js'
 
 const request = supertest(app)
@@ -138,6 +139,43 @@ describe('Links — Integration', () => {
             const res = await request.delete('/api/v1/links/link-1')
 
             expect(res.status).to.equal(401)
+        })
+    })
+
+    describe('GET /:alias', () => {
+        it('resolves a link alias', async () => {
+            sinon.stub(aliasResolverService, 'resolveAlias').resolves({ type: 'link', big_link: 'https://example.com', alias: 'chatg' })
+
+            const res = await request.get('/chatg')
+
+            expect(res.status).to.equal(200)
+            expect(res.body.type).to.equal('link')
+            expect(res.body.big_link).to.equal('https://example.com')
+        })
+
+        it('resolves a hub alias', async () => {
+            sinon.stub(aliasResolverService, 'resolveAlias').resolves({ type: 'hub', name: 'My Hub', links: [] })
+
+            const res = await request.get('/myhub')
+
+            expect(res.status).to.equal(200)
+            expect(res.body.type).to.equal('hub')
+            expect(res.body.name).to.equal('My Hub')
+        })
+
+        it('returns 404 when alias does not exist', async () => {
+            sinon.stub(aliasResolverService, 'resolveAlias').rejects(new ElementNotFound('El alias no existe.'))
+
+            const res = await request.get('/nope')
+
+            expect(res.status).to.equal(404)
+            expect(res.body.error).to.equal('Alias not found')
+        })
+
+        it('passes through aliases containing a dot', async () => {
+            const res = await request.get('/file.js')
+
+            expect(res.status).to.equal(404)
         })
     })
 })

@@ -8,6 +8,7 @@ export class HubsRoutes extends Router {
     }
     init() {
         // api/v1/hubs/...
+        // ========= DEPRECATED: use root GET /:alias =========
         this.get('/public/alias/:alias', 'NOTHING', ['PUBLIC'], this.hubsController.getPublicHubByAlias)
         this.get('/public/:hubId', 'NOTHING', ['PUBLIC'], this.hubsController.getPublicHub)
         this.get('/', 'JWT', ['USER'], this.hubsController.getUserHubs)
