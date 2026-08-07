@@ -1,3 +1,8 @@
+## Working with AI Agents
+
+If you are an AI coding assistant, read the files inside the `agents/` directory before making any changes.
+Those files define the architecture, conventions, and development rules for this repository.
+
 # URLHub
 
 A URL shortener with a **Vite/React frontend** and **Express backend**. Users can create short links, organize them into hubs, and share public hub pages. Built with **Express 5**, **Turso (libSQL)**, and **Passport JWT** authentication.

@@ -36,7 +36,10 @@ export class HubsService {
 
     async getUserHubs(userId) {
         const result = await this.hubsRepository.getUserHubs(userId)
-        return result
+        return result.map(hub => ({
+            ...hub,
+            short_link: `${config.originURL}/${hub.alias}`,
+        }))
     }
 
     async getHubById(hubId) {
@@ -113,5 +116,20 @@ export class HubsService {
     async updateLinkOrder(hubId, linkId, orderIndex) {
         const result = await this.hubsRepository.updateLinkOrder(hubId, linkId, orderIndex)
         return result
+    }
+
+    async reorderHubLinks(userId, links) {
+        const hubs = await this.hubsRepository.getUserHubs(userId)
+
+        if (hubs.length === 0) {
+            throw new ElementNotFound(`El usuario no tiene un hub.`)
+        }
+
+        const hubId = hubs[0].id
+        const orderedIds = links.map(link => link.id)
+
+        await this.hubsRepository.updateLinksOrder(hubId, orderedIds)
+
+        return this.hubsRepository.getHubLinks(hubId)
     }
 }

@@ -19,7 +19,7 @@ export class UsersController {
             console.log('USER CONTROLLER: userAdapter:', userAdapted)
             res.cookie(
                 config.cookieToken, accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: 'None' }
-            ).sendSuccess({message: 'Authorized', user: userAdapted})
+            ).sendSuccess({message: 'Authorized', data: userAdapted})
 
         } catch (error) {
             if(error instanceof UserNotFound){
@@ -34,9 +34,9 @@ export class UsersController {
       
     async register(req, res) {
        try {
-            const { first_name, email_register, password } = req.body
+            const { first_name, email_register, password, nickname } = req.body
             
-            if( !first_name || !email_register || !password ) {
+            if( !first_name || !email_register || !password || !nickname ) {
                 return res.sendClientError({message: 'Incomplete values'})
             }
                         
@@ -53,8 +53,33 @@ export class UsersController {
 
             logger.info('User registered via controller', { email: email_register })
 
-            res.sendSuccess({message: `User with email: ${email_register} registered`})
+            res.sendSuccess({message: `User with email: ${email_register} registered`, data: { id: userId }})
         } catch (error) {
+            if(error instanceof UserAlreadyExists){
+                return res.sendClientError({message: `${error.message}`})
+            }
+            res.sendServerError({message: `${error.message}`})
+        }
+    }
+
+    async updateProfile(req, res) {
+        try {
+            const userId = req.user.id
+            const { nickname, first_name, email, password } = req.body
+
+            if( !nickname || !first_name || !email ) {
+                return res.sendClientError({message: 'Incomplete values'})
+            }
+
+            const updatedUser = await usersService.updateProfile(userId, { nickname, first_name, email, password })
+
+            logger.info('User updated', { userId })
+
+            res.sendSuccess({ message: 'User updated successfully', data: updatedUser })
+        } catch (error) {
+            if(error instanceof UserNotFound){
+                return res.sendClientError({message: `${error.message}`})
+            }
             if(error instanceof UserAlreadyExists){
                 return res.sendClientError({message: `${error.message}`})
             }
@@ -69,7 +94,7 @@ export class UsersController {
             httpOnly: true,
             secure: true,
             sameSite: 'None',
-            }).sendSuccess({ message: 'Logout successful' })
+            }).sendSuccess({ message: 'Logout successful', data: null })
 
         } catch (error) {
             res.sendServerError({message: `${error.message}`})
@@ -78,27 +103,25 @@ export class UsersController {
 
     async authVerify(req, res) {    
         try {
-            const token = req.cookies[config.cookieToken]
-            if (!token) return res.sendUnauthorized({ error: 'No token' })
-            
-            res.sendSuccess({message: 'User autorized'})
-        } catch {
-            res.sendForbidden({ error: 'Token inválido o expirado' })
+            const { id, first_name, nickname, email, role } = req.user
+            res.sendSuccess({ message: 'User authenticated', data: { id, first_name, nickname, email, role } })
+        } catch (error) {
+            res.sendServerError({ message: `${error.message}` })
         }
     }
 
 
     async deleteByEmailRegister(req, res) {
        try {
-            const { email_register } = req.body
+            const { email } = req.user
             
-            if( !email_register  ) {
+            if( !email  ) {
                 return res.sendClientError({message: 'Incomplete values'})
             }
 
-            await usersService.deleteByEmailRegister(email_register)
+            await usersService.deleteByEmailRegister(email)
             
-            res.sendSuccess({status: `Delete successful`, message: `The user with email ${email_register} has been deleted`}) 
+            res.sendSuccess({message: `The user with email ${email} has been deleted`, data: null}) 
         } catch (error) {
             if(error instanceof UserNotFound){
                 return res.sendClientError({message: `${error.message}`})

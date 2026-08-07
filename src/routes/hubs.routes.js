@@ -14,6 +14,7 @@ export class HubsRoutes extends Router {
         this.get('/', 'JWT', ['USER'], this.hubsController.getUserHubs)
         this.get('/:hubId', 'JWT', ['USER'], this.hubsController.getHubById)
         this.post('/', 'JWT', ['USER'], this.hubsController.createHub)
+        this.put('/', 'JWT', ['USER'], this.hubsController.reorderHubLinks)
         this.put('/:hubId', 'JWT', ['USER'], this.hubsController.updateHub)
         this.delete('/:hubId', 'JWT', ['USER'], this.hubsController.deleteHub)
 

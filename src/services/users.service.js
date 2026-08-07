@@ -39,27 +39,80 @@ export class UsersService {
         if(checkUser){
             throw new UserAlreadyExists('The email already exists')
         }
+        const checkNickname = await this.usersRepository.checkNickname(userCredentials.nickname)
+        if(checkNickname){
+            throw new UserAlreadyExists('The nickname already exists')
+        }
         if ('role' in userCredentials) {
             logger.warn('Attempt to assign role in request body', { role: userCredentials.role })
         }
 
         const newUser = {
             first_name: userCredentials.first_name || '',
-            last_name: userCredentials.last_name || '',
-            img_url: userCredentials.img_url || '',
+            last_name: '',
+            img_url: '',
+            nickname: userCredentials.nickname,
             email_register: userCredentials.email_register
         }
         const userId = newId()
         const passHashed = createHash(userCredentials.password)
         newUser.id = userId
         newUser.password = passHashed
-        newUser.nickname = `${userCredentials.first_name}${userId}`
         newUser.role = 'USER'
 
         
         const result = await this.usersRepository.create(newUser)
         logger.debug('Register result:', result)
         return { id: userId }
+    }
+
+    async updateProfile(userId, updates) {
+        const currentUser = await this.usersRepository.getById(userId)
+
+        if(!currentUser){
+            throw new UserNotFound('User not found')
+        }
+
+        const profile = {}
+
+        if (updates.first_name !== undefined) {
+            profile.first_name = updates.first_name
+        }
+
+        if (updates.nickname !== undefined) {
+            const checkNickname = await this.usersRepository.checkNicknameExcept(userId, updates.nickname)
+            if(checkNickname){
+                throw new UserAlreadyExists('The nickname already exists')
+            }
+            profile.nickname = updates.nickname
+        }
+
+        if (updates.email !== undefined) {
+            const checkEmail = await this.usersRepository.checkEmailExcept(userId, updates.email)
+            if(checkEmail){
+                throw new UserAlreadyExists('The email already exists')
+            }
+            profile.email = updates.email
+        }
+
+        if (updates.password) {
+            profile.hashed_pass = createHash(updates.password)
+        }
+
+        if (Object.keys(profile).length > 0) {
+            await this.usersRepository.updateById(userId, profile)
+        }
+
+        const updatedUser = await this.usersRepository.getById(userId)
+
+        return {
+            id: updatedUser.id,
+            first_name: updatedUser.first_name,
+            last_name: updatedUser.last_name,
+            nickname: updatedUser.nickname,
+            email: updatedUser.email,
+            role: updatedUser.role,
+        }
     }
 
     async deleteByEmailRegister(email_register) {

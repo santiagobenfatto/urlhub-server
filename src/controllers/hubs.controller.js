@@ -203,6 +203,26 @@ export class HubsController {
         }
     }
 
+    async reorderHubLinks(req, res) {
+        try {
+            const { links } = req.body
+
+            if (!Array.isArray(links) || links.length === 0) {
+                return res.sendClientError('Incomplete values')
+            }
+
+            if (links.some(link => !link || link.id === undefined)) {
+                return res.sendClientError('Incomplete values')
+            }
+
+            const result = await hubsService.reorderHubLinks(req.user.id, links)
+
+            res.sendSuccess({ message: 'Links order updated successfully', data: result })
+        } catch (error) {
+            res.sendServerError(error.message)
+        }
+    }
+
     async updateLinkOrder(req, res) {
         try {
             const { hubId, linkId } = req.params

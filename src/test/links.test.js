@@ -154,13 +154,15 @@ describe('Links — Integration', () => {
         })
 
         it('resolves a hub alias', async () => {
-            sinon.stub(aliasResolverService, 'resolveAlias').resolves({ type: 'hub', name: 'My Hub', links: [] })
+            sinon.stub(aliasResolverService, 'resolveAlias').resolves({ type: 'hub', name: 'My Hub', first_name: 'Test', nickname: 'testuser', links: [] })
 
             const res = await request.get('/myhub')
 
             expect(res.status).to.equal(200)
             expect(res.body.type).to.equal('hub')
             expect(res.body.name).to.equal('My Hub')
+            expect(res.body.first_name).to.equal('Test')
+            expect(res.body.nickname).to.equal('testuser')
         })
 
         it('returns 404 when alias does not exist', async () => {

@@ -11,6 +11,22 @@ export class UsersRepository {
         return await this.dao.checkUser(userEmail)
     }
 
+    async checkNickname(nickname) {
+        return await this.dao.checkNickname(nickname)
+    }
+
+    async getById(userId) {
+        return await this.dao.getById(userId)
+    }
+
+    async checkEmailExcept(userId, email) {
+        return await this.dao.checkEmailExcept(userId, email)
+    }
+
+    async checkNicknameExcept(userId, nickname) {
+        return await this.dao.checkNicknameExcept(userId, nickname)
+    }
+
     async create(user) {
         return await this.dao.create(user)
     }

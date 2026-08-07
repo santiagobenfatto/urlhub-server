@@ -59,4 +59,8 @@ export class HubsRepository {
     async updateLinkOrder(hubId, linkId, orderIndex) {
         return await this.dao.updateLinkOrder(hubId, linkId, orderIndex)
     }
+
+    async updateLinksOrder(hubId, orderedIds) {
+        return await this.dao.updateLinksOrder(hubId, orderedIds)
+    }
 }

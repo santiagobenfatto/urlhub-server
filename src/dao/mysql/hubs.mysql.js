@@ -134,7 +134,10 @@ export class HubsMySQL {
     async getPublicHub(hubId) {
         try {
             const hubResult = await this.connection.execute({
-                sql: `SELECT title AS name FROM hubs WHERE id = ?`,
+                sql: `SELECT h.title AS name, u.first_name, u.nickname
+                      FROM hubs h
+                      JOIN users u ON h.user_id = u.id
+                      WHERE h.id = ?`,
                 args: [hubId]
             })
 
@@ -142,7 +145,7 @@ export class HubsMySQL {
                 return null
             }
 
-            const name = hubResult.rows[0].name
+            const { name, first_name, nickname } = hubResult.rows[0]
 
             const linksResult = await this.connection.execute({
                 sql: `SELECT l.id, l.title, l.icon, l.alias
@@ -157,7 +160,7 @@ export class HubsMySQL {
                 id, title, icon, alias
             }))
 
-            return { name, links }
+            return { name, first_name, nickname, links }
         } catch (error) {
             throw new DatabaseError(`Error al obtener hub público con ID ${hubId}: ${error.message}`)
         }
@@ -194,6 +197,17 @@ export class HubsMySQL {
             return result
         } catch (error) {
             throw new DatabaseError(`Error al actualizar el orden del enlace en el hub: ${error.message}`)
+        }
+    }
+
+    async updateLinksOrder(hubId, orderedIds) {
+        try {
+            for (const [index, linkId] of orderedIds.entries()) {
+                await this.updateLinkOrder(hubId, linkId, index)
+            }
+            return orderedIds
+        } catch (error) {
+            throw new DatabaseError(`Error al actualizar el orden de los enlaces del hub: ${error.message}`)
         }
     }
 }

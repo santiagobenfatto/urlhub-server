@@ -11,8 +11,9 @@ export class UserRoutes extends Router {
         //  api/v1/users/... 
         this.post('/register', 'NOTHING', ['PUBLIC'], this.usersController.register)
         this.post('/login', 'NOTHING', ['PUBLIC'], this.usersController.login)
-        this.post('/auth/verify', 'NOTHING', ['PUBLIC'], this.usersController.authVerify)
+        this.post('/auth/verify', 'JWT', ['USER'], this.usersController.authVerify)
         this.post('/logout', 'JWT', ['USER'], this.usersController.logout)
-        this.delete('/delete', 'NOTHING', ['ADMIN'], this.usersController.deleteByEmailRegister)
+        this.patch('/update', 'JWT', ['USER'], this.usersController.updateProfile)
+        this.delete('/delete', 'JWT', ['USER'], this.usersController.deleteByEmailRegister)
     }
 }

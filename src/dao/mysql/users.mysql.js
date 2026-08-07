@@ -15,10 +15,6 @@ export class UsersMySQL {
                 args: [email]
             })
 
-            if (!result || result.length === 0) {
-                throw new UserNotFound(`No se encontró un usuario con el email: ${email}`)
-            }
-            
             return result.rows
         } catch (error) {
             throw new DatabaseError(`Error al obtener usuario por email (${email}): ${error.message}`)
@@ -35,6 +31,58 @@ export class UsersMySQL {
         return result.rows[0].count > 0
         } catch (error) {
             throw new DatabaseError(`Error al verificar existencia de usuario con email (${email}): ${error.message}`)
+        }
+    }
+
+    async checkNickname(nickname) {
+    try {
+        const result = await this.connection.execute({
+            sql: `SELECT COUNT(*) AS count FROM users WHERE nickname = ?`,
+            args: [nickname]
+        })
+
+        return result.rows[0].count > 0
+        } catch (error) {
+            throw new DatabaseError(`Error al verificar existencia de usuario con nickname (${nickname}): ${error.message}`)
+        }
+    }
+
+    async getById(userId) {
+        try {
+            const result = await this.connection.execute({
+                sql: `SELECT id, first_name, last_name, nickname, img_url, email, hashed_pass, role FROM users WHERE id = ?`,
+                args: [userId]
+            })
+
+            return result.rows[0] || null
+        } catch (error) {
+            throw new DatabaseError(`Error al obtener usuario con ID (${userId}): ${error.message}`)
+        }
+    }
+
+    async checkEmailExcept(userId, email) {
+    try {
+        const result = await this.connection.execute({
+            sql: `SELECT COUNT(*) AS count FROM users WHERE email = ? AND id != ?`,
+            args: [email, userId]
+        })
+
+        return result.rows[0].count > 0
+        } catch (error) {
+            throw new DatabaseError(`Error al verificar existencia de email (${email}) para otro usuario: ${error.message}`)
+        }
+    }
+
+    async checkNicknameExcept(userId, nickname) {
+    try {
+        const result = await this.connection.execute({
+            sql: `SELECT COUNT(*) AS count FROM users WHERE nickname = ? AND id != ?`,
+            args: [nickname, userId]
+        })
+
+        return result.rows[0].count > 0
+        } catch (error) {
+            throw new DatabaseError(`Error al verificar existencia de nickname (${nickname}) para otro usuario: ${error.message}`)
         }
     }
 
@@ -56,16 +104,28 @@ export class UsersMySQL {
 
     updateById = async (userId, updates) => {
         try {
-            const result = await this.connection.execute({
-                sql: `UPDATE users SET first_name = ?, last_name = ?, nickname = ?, email = ? WHERE user_id = ?`,
-                args: [updates.first_name, updates.last_name, updates.nickname, updates.email, userId]
-            })
+            const allowedFields = ['first_name', 'nickname', 'email', 'hashed_pass']
+            const fields = []
+            const args = []
 
-            if (result.affectedRows === 0) {
-                throw new UserNotFound(`No se encontró un usuario con ID: ${userId}`)
+            for (const [key, value] of Object.entries(updates)) {
+                if (allowedFields.includes(key) && value !== undefined) {
+                    fields.push(`${key} = ?`)
+                    args.push(value)
+                }
             }
 
-            return result.rows[0]
+            if (fields.length === 0) {
+                throw new DatabaseError('No valid fields provided for update')
+            }
+
+            args.push(userId)
+            const result = await this.connection.execute({
+                sql: `UPDATE users SET ${fields.join(', ')} WHERE id = ?`,
+                args
+            })
+
+            return result
         } catch (error) {
             throw new DatabaseError(`Error al actualizar usuario con ID (${userId}): ${error.message}`)
         }

@@ -26,10 +26,10 @@ describe('Users — Integration', () => {
 
             const res = await request
                 .post('/api/v1/users/register')
-                .send({ first_name: 'Test', email_register: 'test@example.com', password: 'secret123' })
+                .send({ first_name: 'Test', email_register: 'test@example.com', password: 'secret123', nickname: 'testuser' })
 
             expect(res.status).to.equal(200)
-            expect(res.body.data.message).to.equal('User with email: test@example.com registered')
+            expect(res.body.message).to.equal('User with email: test@example.com registered')
             expect(hubsService.createHub.calledOnce).to.be.true
             expect(hubsService.createHub.firstCall.args[0].userId).to.equal('new-user-id')
         })
@@ -39,7 +39,17 @@ describe('Users — Integration', () => {
 
             const res = await request
                 .post('/api/v1/users/register')
-                .send({ first_name: 'Test', email_register: 'existing@example.com', password: 'secret123' })
+                .send({ first_name: 'Test', email_register: 'existing@example.com', password: 'secret123', nickname: 'testuser' })
+
+            expect(res.status).to.equal(400)
+        })
+
+        it('rejects registration with existing nickname', async () => {
+            sinon.stub(usersService, 'register').rejects(new (await import('../errors/custom-errors.js')).UserAlreadyExists('The nickname already exists'))
+
+            const res = await request
+                .post('/api/v1/users/register')
+                .send({ first_name: 'Test', email_register: 'test@example.com', password: 'secret123', nickname: 'takennick' })
 
             expect(res.status).to.equal(400)
         })
@@ -111,6 +121,44 @@ describe('Users — Integration', () => {
 
         it('requires authentication', async () => {
             const res = await request.post('/api/v1/users/logout')
+
+            expect(res.status).to.equal(401)
+        })
+    })
+
+    describe('PATCH /api/v1/users/update', () => {
+        it('updates the user profile successfully', async () => {
+            const updatedUser = {
+                id: 'test-user-id',
+                first_name: 'Test',
+                last_name: 'User',
+                nickname: 'newuser',
+                email: 'test@example.com'
+            }
+            sinon.stub(usersService, 'updateProfile').resolves(updatedUser)
+
+            const res = await request
+                .patch('/api/v1/users/update')
+                .set('Cookie', 'auth_token=' + token)
+                .send({ first_name: 'Test', email: 'test@example.com', password: 'secret123', nickname: 'newuser' })
+
+            expect(res.status).to.equal(200)
+            expect(res.body.data).to.deep.equal(updatedUser)
+        })
+
+        it('rejects updates with missing fields', async () => {
+            const res = await request
+                .patch('/api/v1/users/update')
+                .set('Cookie', 'auth_token=' + token)
+                .send({ first_name: 'Test' })
+
+            expect(res.status).to.equal(400)
+        })
+
+        it('requires authentication', async () => {
+            const res = await request
+                .patch('/api/v1/users/update')
+                .send({ first_name: 'Test', nickname: 'newuser', email: 'test@example.com' })
 
             expect(res.status).to.equal(401)
         })
