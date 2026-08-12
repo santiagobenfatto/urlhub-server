@@ -20,9 +20,14 @@ const generateToken = (user) => {
     return token
 }
 
+const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
 export {
     __dirname,
     createHash,
     passwordValidation,
-    generateToken
+    generateToken,
+    validateEmail
 }

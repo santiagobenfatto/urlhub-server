@@ -1,6 +1,6 @@
-import { UserNotFound, UserAlreadyExists, IncorrectLoginCredentials } from '../errors/custom-errors.js'
+import { UserNotFound, UserAlreadyExists, IncorrectLoginCredentials, ValidationError } from '../errors/custom-errors.js'
 import { newId } from '../utils/generators.js'
-import { createHash, generateToken, passwordValidation } from '../utils/utils.js'
+import { createHash, generateToken, passwordValidation, validateEmail } from '../utils/utils.js'
 import logger from '../utils/logger.js'
 
 export class UsersService {
@@ -75,27 +75,42 @@ export class UsersService {
 
         const profile = {}
 
-        if (updates.first_name !== undefined) {
-            profile.first_name = updates.first_name
+        if (updates.first_name !== undefined && updates.first_name !== null) {
+            const first_name = updates.first_name.trim()
+            if (first_name.length === 0) {
+                throw new ValidationError('first_name cannot be empty')
+            }
+            profile.first_name = first_name
         }
 
-        if (updates.nickname !== undefined) {
-            const checkNickname = await this.usersRepository.checkNicknameExcept(userId, updates.nickname)
+        if (updates.nickname !== undefined && updates.nickname !== null) {
+            const nickname = updates.nickname.trim()
+            if (nickname.length === 0) {
+                throw new ValidationError('nickname cannot be empty')
+            }
+            const checkNickname = await this.usersRepository.checkNicknameExcept(userId, nickname)
             if(checkNickname){
                 throw new UserAlreadyExists('The nickname already exists')
             }
-            profile.nickname = updates.nickname
+            profile.nickname = nickname
         }
 
-        if (updates.email !== undefined) {
-            const checkEmail = await this.usersRepository.checkEmailExcept(userId, updates.email)
+        if (updates.email !== undefined && updates.email !== null) {
+            const email = updates.email.trim().toLowerCase()
+            if (!validateEmail(email)) {
+                throw new ValidationError('Invalid email format')
+            }
+            const checkEmail = await this.usersRepository.checkEmailExcept(userId, email)
             if(checkEmail){
                 throw new UserAlreadyExists('The email already exists')
             }
-            profile.email = updates.email
+            profile.email = email
         }
 
-        if (updates.password) {
+        if (updates.password !== undefined && updates.password !== null) {
+            if (typeof updates.password !== 'string' || updates.password.trim().length === 0) {
+                throw new ValidationError('password cannot be empty')
+            }
             profile.hashed_pass = createHash(updates.password)
         }
 

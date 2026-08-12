@@ -127,32 +127,136 @@ describe('Users — Integration', () => {
     })
 
     describe('PATCH /api/v1/users/update', () => {
-        it('updates the user profile successfully', async () => {
-            const updatedUser = {
-                id: 'test-user-id',
-                first_name: 'Test',
-                last_name: 'User',
-                nickname: 'newuser',
-                email: 'test@example.com'
-            }
-            sinon.stub(usersService, 'updateProfile').resolves(updatedUser)
+        const userRow = {
+            id: 'test-user-id',
+            first_name: 'Test',
+            last_name: 'User',
+            nickname: 'testuser',
+            img_url: '',
+            email: 'test@example.com',
+            hashed_pass: '$2b$10$existinghash',
+            role: 'USER',
+        }
 
-            const res = await request
-                .patch('/api/v1/users/update')
-                .set('Cookie', 'auth_token=' + token)
-                .send({ first_name: 'Test', email: 'test@example.com', password: 'secret123', nickname: 'newuser' })
+        const stubUserRepository = (overrides = {}) => {
+            sinon.stub(usersService.usersRepository, 'getById').resolves(userRow)
+            sinon.stub(usersService.usersRepository, 'checkNicknameExcept').resolves(overrides.nicknameTaken ?? false)
+            sinon.stub(usersService.usersRepository, 'checkEmailExcept').resolves(overrides.emailTaken ?? false)
+            sinon.stub(usersService.usersRepository, 'updateById').resolves({})
+        }
+
+        const patchUpdate = (payload) => request
+            .patch('/api/v1/users/update')
+            .set('Cookie', 'auth_token=' + token)
+            .send(payload)
+
+        it('updates only the provided field on a single-field PATCH', async () => {
+            stubUserRepository()
+
+            const res = await patchUpdate({ email: 'new@example.com' })
 
             expect(res.status).to.equal(200)
-            expect(res.body.data).to.deep.equal(updatedUser)
+            expect(usersService.usersRepository.updateById.calledOnce).to.be.true
+            expect(usersService.usersRepository.updateById.firstCall.args[1]).to.deep.equal({ email: 'new@example.com' })
         })
 
-        it('rejects updates with missing fields', async () => {
-            const res = await request
-                .patch('/api/v1/users/update')
-                .set('Cookie', 'auth_token=' + token)
-                .send({ first_name: 'Test' })
+        it('updates multiple provided fields', async () => {
+            stubUserRepository()
+
+            const res = await patchUpdate({ first_name: 'New', nickname: 'newnick' })
+
+            expect(res.status).to.equal(200)
+            expect(usersService.usersRepository.updateById.firstCall.args[1]).to.deep.equal({ first_name: 'New', nickname: 'newnick' })
+        })
+
+        it('ignores null fields', async () => {
+            stubUserRepository()
+
+            const res = await patchUpdate({ nickname: 'newnick', email: null, password: null })
+
+            expect(res.status).to.equal(200)
+            expect(usersService.usersRepository.updateById.firstCall.args[1]).to.deep.equal({ nickname: 'newnick' })
+        })
+
+        it('rejects an empty payload', async () => {
+            stubUserRepository()
+
+            const res = await patchUpdate({})
 
             expect(res.status).to.equal(400)
+            expect(res.body.error).to.equal('No fields provided for update')
+        })
+
+        it('rejects a payload with only null fields', async () => {
+            stubUserRepository()
+
+            const res = await patchUpdate({ email: null })
+
+            expect(res.status).to.equal(400)
+        })
+
+        it('rejects empty or whitespace-only field values', async () => {
+            const cases = [
+                { nickname: '  ' },
+                { first_name: '' },
+                { email: '' },
+                { password: '   ' },
+            ]
+
+            for (const payload of cases) {
+                sinon.restore()
+                stubUserRepository()
+
+                const res = await patchUpdate(payload)
+                expect(res.status).to.equal(400)
+            }
+        })
+
+        it('rejects an invalid email format', async () => {
+            stubUserRepository()
+
+            const res = await patchUpdate({ email: 'not-an-email' })
+
+            expect(res.status).to.equal(400)
+        })
+
+        it('normalizes email to lowercase before storing', async () => {
+            stubUserRepository()
+
+            const res = await patchUpdate({ email: '  TEST@Example.COM  ' })
+
+            expect(res.status).to.equal(200)
+            expect(usersService.usersRepository.updateById.firstCall.args[1]).to.deep.equal({ email: 'test@example.com' })
+        })
+
+        it('rejects a nickname that exists case-insensitively', async () => {
+            stubUserRepository({ nicknameTaken: true })
+
+            const res = await patchUpdate({ nickname: 'Santi' })
+
+            expect(res.status).to.equal(400)
+            expect(res.body.error.message).to.equal('The nickname already exists')
+        })
+
+        it('keeps the existing password when omitted or null', async () => {
+            stubUserRepository()
+
+            const res = await patchUpdate({ email: 'new@example.com', password: null })
+
+            expect(res.status).to.equal(200)
+            expect(usersService.usersRepository.updateById.firstCall.args[1]).to.deep.equal({ email: 'new@example.com' })
+        })
+
+        it('hashes and stores a valid password', async () => {
+            stubUserRepository()
+
+            const res = await patchUpdate({ password: 'newpass123' })
+
+            expect(res.status).to.equal(200)
+            const updates = usersService.usersRepository.updateById.firstCall.args[1]
+            expect(updates.hashed_pass).to.be.a('string')
+            expect(updates.hashed_pass.startsWith('$2')).to.be.true
+            expect(updates.hashed_pass).to.not.equal('newpass123')
         })
 
         it('requires authentication', async () => {

@@ -47,6 +47,13 @@ export class DatabaseError extends Error {
     }
 }
 
+export class ValidationError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = this.constructor.name
+    }
+}
+
 export class URLError extends Error {
     constructor(message) {
         super(message)

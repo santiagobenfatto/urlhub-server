@@ -14,7 +14,7 @@ export class LinksRoutes extends Router {
         this.post('/', 'JWT', ['USER'], this.linksController.addLink)
         // ========= DEPRECATED =========
         // this.patch('/migrate', 'JWT', ['USER'], this.linksController.migratePublicLink)
-        this.put('/:linkId', 'JWT', ['USER'], this.linksController.updateLink)
+        this.patch('/:linkId', 'JWT', ['USER'], this.linksController.updateLink)
         this.delete('/:linkId', 'JWT', ['USER'], this.linksController.removeLink)
     }
 }

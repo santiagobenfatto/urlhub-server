@@ -1,4 +1,4 @@
-import { UserNotFound, UserAlreadyExists, IncorrectLoginCredentials } from '../errors/custom-errors.js'
+import { UserNotFound, UserAlreadyExists, IncorrectLoginCredentials, ValidationError } from '../errors/custom-errors.js'
 import { usersService, hubsService } from '../container.js'
 import config from '../config/config.js'
 import logger from '../utils/logger.js'
@@ -16,7 +16,7 @@ export class UsersController {
             const {accessToken, userAdapted} = await usersService.login({...req.body})
 
             logger.info('User logged in', { userId: userAdapted.id, email: userAdapted.email })
-            console.log('USER CONTROLLER: userAdapter:', userAdapted)
+
             res.cookie(
                 config.cookieToken, accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: 'None' }
             ).sendSuccess({message: 'Authorized', data: userAdapted})
@@ -67,16 +67,21 @@ export class UsersController {
             const userId = req.user.id
             const { nickname, first_name, email, password } = req.body
 
-            if( !nickname || !first_name || !email ) {
-                return res.sendClientError({message: 'Incomplete values'})
+            const hasUpdate = [nickname, first_name, email, password].some(field => field !== undefined && field !== null)
+            if( !hasUpdate ) {
+                return res.sendClientError('No fields provided for update')
             }
-
+            
             const updatedUser = await usersService.updateProfile(userId, { nickname, first_name, email, password })
+            console.log('update controller:', updatedUser)
 
             logger.info('User updated', { userId })
 
             res.sendSuccess({ message: 'User updated successfully', data: updatedUser })
         } catch (error) {
+            if(error instanceof ValidationError){
+                return res.sendClientError(`${error.message}`)
+            }
             if(error instanceof UserNotFound){
                 return res.sendClientError({message: `${error.message}`})
             }

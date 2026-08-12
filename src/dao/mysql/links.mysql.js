@@ -92,10 +92,10 @@ export class LinksMySQL {
 
             args.push(linkId)
             const result = await this.connection.execute({
-                sql: `UPDATE links SET ${fields.join(', ')} WHERE id = ?`,
+                sql: `UPDATE links SET ${fields.join(', ')} WHERE id = ? RETURNING id, big_link, title, alias, icon`,
                 args
             })
-            return result
+            return result.rows[0]
         } catch (error) {
             throw new DatabaseError(`Error al actualizar el enlace con ID ${linkId}: ${error.message}`)
         }

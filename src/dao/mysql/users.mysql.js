@@ -37,7 +37,7 @@ export class UsersMySQL {
     async checkNickname(nickname) {
     try {
         const result = await this.connection.execute({
-            sql: `SELECT COUNT(*) AS count FROM users WHERE nickname = ?`,
+            sql: `SELECT COUNT(*) AS count FROM users WHERE LOWER(nickname) = LOWER(?)`,
             args: [nickname]
         })
 
@@ -76,7 +76,7 @@ export class UsersMySQL {
     async checkNicknameExcept(userId, nickname) {
     try {
         const result = await this.connection.execute({
-            sql: `SELECT COUNT(*) AS count FROM users WHERE nickname = ? AND id != ?`,
+            sql: `SELECT COUNT(*) AS count FROM users WHERE LOWER(nickname) = LOWER(?) AND id != ?`,
             args: [nickname, userId]
         })
 
